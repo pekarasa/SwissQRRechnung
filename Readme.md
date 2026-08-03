@@ -1,14 +1,26 @@
-Ich habe die Grundstruktur für ein Firefox Add-on in `d:/git/SwissQRRechnung` erstellt. Es ist wie folgt aufgebaut:
+# Zweck
 
-1. __`manifest.json`__: Definiert die Erweiterung und weist Firefox an, die Skripte auf allen Webseiten zu laden.
-2. __`content.js`__: Das Herzstück. Es fügt einen Button mit der ID `my-custom-addon-button` zum Body jeder Webseite hinzu. Der Button löst beim Klicken derzeit einen einfachen `alert` aus. Ein `MutationObserver` stellt sicher, dass der Button auch auf modernen Webseiten (SPAs) erhalten bleibt, die Inhalte dynamisch nachladen.
-3. __`style.css`__: Sorgt dafür, dass der Button unten rechts fixiert erscheint und gut sichtbar ist.
+Es soll ein Programm entwickelt werden, das einen Ordner auf bestimmte Dateien überwacht. Sobald die Stamm- und Rechnungsdaten gefunden wurden, werden sie in einer neuen Datei zusammengestellt und an eine Website geschickt, um daraus ein PDF zu erstellen.
+Das Programm läuft unter Linux.
 
-### So testen Sie das Add-on in Firefox:
+## Stammdaten
 
-1. Öffnen Sie Firefox und geben Sie `about:debugging#/runtime/this-firefox` in die Adresszeile ein.
-2. Klicken Sie auf __"Temporäres Add-on laden..."__ (Load Temporary Add-on...).
-3. Wählen Sie die Datei `manifest.json` in Ihrem Verzeichnis `d:/git/SwissQRRechnung` aus.
-4. Besuchen Sie eine beliebige Webseite (z. B. google.ch). Sie sollten nun unten rechts einen orangefarbenen Button "QR-Aktion" sehen.
+Die Stammdaten sind in einer CSV-Datei gespeichert, deren Namensmuster folgend ist: 'Alle_Kantone_{MM}-{MM}_{YYYY}_{##########}.csv'
+Beispiel: data\Alle_Kantone_07-07_2026_1785683522.csv
 
-Das Add-on kann nun beliebig erweitert werden, um z. B. Daten von der Webseite zu lesen oder mit APIs zu kommunizieren.
+## Rechnungsdaten
+
+Die Rechnungsdaten sind in einer Excel-Datei gespeichert, deren Namensmuster folgend ist: 'checkDataClients_Klientenstatus_-aktiv_{dd}-{MM}-{yyyy}.xls'
+Beispiel: data\checkDataClients_Klientenstatus_-aktiv_02-08-2026.xls
+
+## Konfigurationen
+
+Neben dem zu erstellenden Programm liegt eine Konfigurationsdatei mit dem Namen 'Rechnungssteller.json'.
+
+Beispiel: data\Rechnungssteller.json und data\SwissQRRechnung.json
+
+## Verarbeitung
+
+Wenn sich eine der Dateien verändert, oder eine neuere Datei im Ornder erscheint, werden alle Daten erneut eingelesen und verarbeitet.
+Aus den Stammdaten, der Konfigurationsdatei und den Rechnungsdaten wird eine neue Datei mit dem Namen 'QR-Rechnungen.ods' erstellt.
+Diese Datei wird an eine Website geschickt. Die Website erstellt daraus eine PDF-Datei, die anschließend heruntergeladen und ausgedruckt werden kann.

@@ -1,0 +1,14 @@
+{
+    "Stammdaten" : {
+        "Path": "~/Downloads",
+        "Pattern": ""
+    },
+    "Rechnungsdaten": {
+        "Path": "~/Downloads",
+        "Pattern": ""
+    },
+    "QR-Rechnungen": {
+        "Path": "~/Downloads",
+        "Pattern": ""
+    }
+}
