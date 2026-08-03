@@ -1,14 +1,14 @@
 {
     "Stammdaten" : {
         "Path": "~/Downloads",
-        "Pattern": ""
+        "Pattern": "Alle_Kantone_(\\d{2})-(\\d{2})_(\\d{4})_(\\d{10})\\.csv"
     },
     "Rechnungsdaten": {
         "Path": "~/Downloads",
-        "Pattern": ""
+        "Pattern": "checkDataClients_Klientenstatus_-aktiv_(\\d{2})-(\\d{2})-(\\d{4})\\.xls"
     },
     "QR-Rechnungen": {
         "Path": "~/Downloads",
-        "Pattern": ""
+        "Pattern": "QR-Rechnungen\\.ods"
     }
 }
