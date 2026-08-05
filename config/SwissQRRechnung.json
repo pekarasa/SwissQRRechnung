@@ -1,11 +1,11 @@
 {
     "Stammdaten" : {
         "Path": "~/Downloads",
-        "Pattern": "Alle_Kantone_(\\d{2})-(\\d{2})_(\\d{4})_(\\d{10})\\.csv"
+        "Pattern": "checkDataClients_Klientenstatus_-aktiv_(\\d{2})-(\\d{2})-(\\d{4})\\.xls"
     },
     "Rechnungsdaten": {
         "Path": "~/Downloads",
-        "Pattern": "checkDataClients_Klientenstatus_-aktiv_(\\d{2})-(\\d{2})-(\\d{4})\\.xls"
+        "Pattern": "Alle_Kantone_(\\d{2})-(\\d{2})_(\\d{4})_(\\d{10})\\.csv"
     },
     "QR-Rechnungen": {
         "Path": "~/Downloads",
