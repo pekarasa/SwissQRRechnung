@@ -48,7 +48,7 @@ Das Mapping erfolgt wie folgt:
 | **Cdtr_PstCd** | Rechnungssteller.json | `PLZ` |
 | **Cdtr_TwnNm** | Rechnungssteller.json | `Ort` |
 | **Cdtr_Ctry** | Festwert | `CH` |
-| **Amt** | Rechnungsdaten (CSV) | `Gesamt in CHF` |
+| **Amt** | Rechnungsdaten (CSV) | `Klient` |
 | **Ccy** | Festwert | `CHF` |
 | **UltmtDbtr_AdrTp** | Festwert | `S` |
 | **UltmtDbtr_Name** | Stammdaten (XLS) | `Vorname` + `Nachname` (Match via Name aus CSV) |
@@ -71,7 +71,7 @@ Das Mapping erfolgt wie folgt:
 **Logik:**
 
 - Die Klienten werden zwischen der CSV (Rechnungsdaten) und der XLS (Stammdaten) über den Namen (z.B. "Meier, Frau Sandra") zugeordnet.
-- Der Betrag wird aus der Spalte `Gesamt in CHF` der CSV-Datei für die jeweilige Person übernommen.
+- Der Betrag wird aus der Spalte `Klient` der CSV-Datei für die jeweilige Person übernommen.
 - Die Empfängerdaten stammen vollständig aus der `Rechnungssteller.json`.
 - Die Adressdaten der Klienten (`UltmtDbtr`) werden aus der Spalte `Strasse Nr.` der Excel-Datei (Stammdaten) extrahiert, wobei die Hausnummer vom Strassennamen getrennt wird.
 
