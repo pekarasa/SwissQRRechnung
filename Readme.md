@@ -1,6 +1,6 @@
 # Zweck
 
-Es soll ein Programm entwickelt werden, das einen Ordner auf bestimmte Dateien überwacht. Sobald die Stamm- und Rechnungsdaten gefunden wurden, werden sie in einer neuen Datei zusammengestellt und an eine Website geschickt, um daraus ein PDF zu erstellen.
+Es soll ein Programm entwickelt werden, das einen Ordner auf bestimmte Dateien überwacht. Sobald die Stamm- und Rechnungsdaten gefunden wurden, werden sie in einer neuen Datei zusammengestellt und an eine Website geschickt, um daraus ein PDF zu erstellen. Nach einem Durchlauf beendet sich das Programm und gibt aus, ob eine PDF erstellt werden konnte, ob Stamm- oder Rechnungsdaten nicht gefunden wurden oder ob ein anderer Fehler aufgetreten ist.
 Das Programm läuft unter Linux.
 
 ## Programmstart
