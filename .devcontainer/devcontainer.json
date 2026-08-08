@@ -6,6 +6,7 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
+				"actboy168.tasks",
 				"ms-python.python",
 				"ms-python.vscode-pylance",
 				"EditorConfig.EditorConfig"
