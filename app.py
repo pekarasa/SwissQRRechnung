@@ -5,6 +5,7 @@ import re
 import json
 import requests
 import pandas as pd
+from playwright.sync_api import sync_playwright
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
@@ -179,19 +180,44 @@ class FileProcessorHandler(FileSystemEventHandler):
         self.generate_pdfs(csv_filepath)
 
     def generate_pdfs(self, csv_filepath):
-        print("Sende Daten an Website zur PDF-Erstellung...")
-        url = "http://localhost:8080/api/pdf" # Placeholder URL
+        print(f"Lade Daten hoch auf https://qr-rechnung.net/#/table: {csv_filepath}")
         try:
-            with open(csv_filepath, 'rb') as f:
-                files = {'file': (os.path.basename(csv_filepath), f, 'text/csv')}
-                response = requests.post(url, files=files)
+            with sync_playwright() as p:
+                browser = p.chromium.launch(headless=True)
+                context = browser.new_context(locale='de-CH')
+                page = context.new_page()
+                page.goto("https://qr-rechnung.net/#/table", wait_until='networkidle')
 
-            if response.status_code == 200:
-                print("PDF erfolgreich erstellt!")
-            else:
-                print(f"Fehler bei der PDF-Erstellung. Status: {response.status_code}")
+                # Warte auf das FileChooser-Event und klicke auf "Tabelle laden" (oder "Load table")
+                with page.expect_file_chooser() as fc_info:
+                    page.locator("button", has_text=re.compile(r"Tabelle laden|Load table", re.IGNORECASE)).click()
+
+                file_chooser = fc_info.value
+                file_chooser.set_files(os.path.abspath(csv_filepath))
+
+                print("Datei erfolgreich ausgewählt und hochgeladen!")
+                time.sleep(2) # Kurze Pause, damit die Seite reagieren kann
+
+                print("Klicke 'INPUT PDF LEEREN'...")
+                page.locator("button", has_text=re.compile(r"Input PDF leeren|Clear input PDF", re.IGNORECASE)).click()
+                time.sleep(1)
+
+                print("Lade Rechnungen herunter...")
+                page.locator("button", has_text=re.compile(r"Mehrere Rechnungen herunterladen|Download multiple bills", re.IGNORECASE)).click()
+
+                time.sleep(1) # Kurze Pause für das Pop-up
+                print("Klicke PDF-Button im Pop-up...")
+                with page.expect_download() as download_info:
+                    page.locator("button", has_text=re.compile(r"^PDF$", re.IGNORECASE)).click()
+
+                download = download_info.value
+                download_path = os.path.join("data", "QR-Rechnungen_generiert.pdf")
+                download.save_as(download_path)
+                print(f"Datei erfolgreich heruntergeladen: {download_path}")
+
+                browser.close()
         except Exception as e:
-            print(f"Fehler bei der Verbindung zum PDF-Service: {e}")
+            print(f"Fehler beim Upload via Playwright: {e}")
 
 def main():
     qr_config_path = os.path.join("config", "SwissQRRechnung.json")

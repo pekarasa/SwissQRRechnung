@@ -5,7 +5,7 @@ Das Programm läuft unter Linux.
 
 ## Programmstart
 
-Das Programm kann mit `python app.py` gestartet werden. Zuvor müssen die Abhängigkeiten via `pip install pandas watchdog requests odfpy xlrd` installiert werden.
+Das Programm kann mit `python app.py` gestartet werden. Zuvor müssen die Abhängigkeiten via `pip install pandas watchdog playwright odfpy xlrd` installiert werden. Zusätzlich müssen die Playwright-Browser installiert werden, z.B. mit dem Befehl `playwright install chromium`.
 
 ## Stammdaten
 
@@ -27,7 +27,7 @@ Beispiel: data\Rechnungssteller.json und data\SwissQRRechnung.json
 
 Wenn sich eine der oben erwähnten Dateien verändert, oder eine neuere Datei im Ornder erscheint, werden alle Daten erneut eingelesen und verarbeitet.
 Aus den Stammdaten, der Konfigurationsdatei und den Rechnungsdaten wird eine neue Datei mit dem Namen 'QR-Rechnungen.csv' erstellt.
-Diese Datei wird an eine Website geschickt. Die Website erstellt daraus eine PDF-Datei, die anschließend heruntergeladen und ausgedruckt werden kann.
+Diese Datei wird mithilfe einer Browser-Automatisierung (Playwright) auf die Website `https://qr-rechnung.net/#/table` hochgeladen. Dort wird daraus automatisch eine PDF-Datei (`QR-Rechnungen_generiert.pdf`) generiert, heruntergeladen und gespeichert, welche anschließend ausgedruckt werden kann.
 
 ## QR-Rechnungen.csv
 
@@ -73,4 +73,5 @@ Das Mapping erfolgt wie folgt:
 - Der Betrag wird aus der Spalte `Klient` der CSV-Datei für die jeweilige Person übernommen.
 - Die Empfängerdaten stammen vollständig aus der `Rechnungssteller.json`.
 - Die Adressdaten der Klienten (`UltmtDbtr`) werden aus der Spalte `Strasse Nr.` der Excel-Datei (Stammdaten) extrahiert, wobei die Hausnummer vom Strassennamen getrennt wird.
+- Summenzeilen in den Rechnungsdaten (bei denen der Name mit "Gesamt" beginnt) werden beim Einlesen ignoriert.
 
