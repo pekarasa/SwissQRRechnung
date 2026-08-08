@@ -9,6 +9,6 @@
     },
     "QR-Rechnungen": {
         "Path": "~/Downloads",
-        "Pattern": "QR-Rechnungen\\.ods"
+        "Pattern": "QR-Rechnungen\\.csv"
     }
 }

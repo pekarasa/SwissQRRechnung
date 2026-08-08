@@ -26,18 +26,18 @@ Beispiel: data\Rechnungssteller.json und data\SwissQRRechnung.json
 ## Verarbeitung
 
 Wenn sich eine der oben erwähnten Dateien verändert, oder eine neuere Datei im Ornder erscheint, werden alle Daten erneut eingelesen und verarbeitet.
-Aus den Stammdaten, der Konfigurationsdatei und den Rechnungsdaten wird eine neue Datei mit dem Namen 'QR-Rechnungen.ods' erstellt.
+Aus den Stammdaten, der Konfigurationsdatei und den Rechnungsdaten wird eine neue Datei mit dem Namen 'QR-Rechnungen.csv' erstellt.
 Diese Datei wird an eine Website geschickt. Die Website erstellt daraus eine PDF-Datei, die anschließend heruntergeladen und ausgedruckt werden kann.
 
-## QR-Rechnungen.ods
+## QR-Rechnungen.csv
 
-Die Zieldatei `data\QR-Rechnungen.ods` wird aus den konfigurierten Stammdaten, Rechnungsdaten und der Rechnungssteller-Konfiguration generiert.
+Die Zieldatei `data\QR-Rechnungen.csv` wird aus den konfigurierten Stammdaten, Rechnungsdaten und der Rechnungssteller-Konfiguration generiert.
 
 ### Mapping
 
 Das Mapping erfolgt wie folgt:
 
-| Zielspalte (QR-Rechnungen.ods) | Quelle | Quellfeld / Logik |
+| Zielspalte (QR-Rechnungen.csv) | Quelle | Quellfeld / Logik |
 | :--- | :--- | :--- |
 | **Lang** | Festwert | `de` |
 | **IBAN** | Rechnungssteller.json | `IBAN` |

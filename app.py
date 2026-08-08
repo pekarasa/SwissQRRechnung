@@ -154,33 +154,33 @@ class FileProcessorHandler(FileSystemEventHandler):
                 'Email': ''
             })
 
-        ods_df = pd.DataFrame(records)
+        out_df = pd.DataFrame(records)
 
-        # 5. Save to ODS
+        # 5. Save to CSV
         qr_conf = self.qr_config.get('QR-Rechnungen', {})
         out_path = os.path.expanduser(qr_conf.get('Path', 'data'))
         if out_path.startswith("~") or not os.path.exists(out_path):
             out_path = "data"
 
-        ods_filename = "QR-Rechnungen-Result.ods" # from pattern usually, but hardcoded fallback
-        ods_filepath = os.path.join(out_path, ods_filename)
+        csv_filename = "QR-Rechnungen-Result.csv" # from pattern usually, but hardcoded fallback
+        csv_filepath = os.path.join(out_path, csv_filename)
 
         try:
-            ods_df.to_excel(ods_filepath, index=False, engine='odf')
-            print(f"ODS-Datei erfolgreich erstellt: {ods_filepath}")
+            out_df.to_csv(csv_filepath, index=False, sep=',', encoding='utf-8')
+            print(f"CSV-Datei erfolgreich erstellt: {csv_filepath}")
         except Exception as e:
-            print(f"Fehler beim Erstellen der ODS-Datei: {e}")
+            print(f"Fehler beim Erstellen der CSV-Datei: {e}")
             return
 
         # 6. Send to Website (PDF creation)
-        self.generate_pdfs(ods_filepath)
+        self.generate_pdfs(csv_filepath)
 
-    def generate_pdfs(self, ods_filepath):
+    def generate_pdfs(self, csv_filepath):
         print("Sende Daten an Website zur PDF-Erstellung...")
         url = "http://localhost:8080/api/pdf" # Placeholder URL
         try:
-            with open(ods_filepath, 'rb') as f:
-                files = {'file': (os.path.basename(ods_filepath), f, 'application/vnd.oasis.opendocument.spreadsheet')}
+            with open(csv_filepath, 'rb') as f:
+                files = {'file': (os.path.basename(csv_filepath), f, 'text/csv')}
                 response = requests.post(url, files=files)
 
             if response.status_code == 200:
