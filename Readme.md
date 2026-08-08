@@ -53,7 +53,7 @@ Das Mapping erfolgt wie folgt:
 | **UltmtDbtr_AdrTp** | Festwert | `S` |
 | **UltmtDbtr_Name** | Stammdaten (XLS) | `Vorname` + `Nachname` (Match via Name aus CSV) |
 | **UltmtDbtr_StrtNmOrAdrLine1** | Stammdaten (XLS) | `Strasse Nr.` (Strasse ohne Hausnummer) |
-| **UltmtDbtr_StrtNmOrAdrLine2** | Stammdaten (XLS) | `Strasse Nr.` (nur Hausnummer) |
+| **UltmtDbtr_BldgNbOrAdrLine2** | Stammdaten (XLS) | `Strasse Nr.` (nur Hausnummer) |
 | **UltmtDbtr_PstCd** | Stammdaten (XLS) | `PLZ` |
 | **UltmtDbtr_TwnNm** | Stammdaten (XLS) | `Ort` |
 | **UltmtDbtr_Ctry** | Festwert | `CH` |
