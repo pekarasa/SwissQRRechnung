@@ -32,6 +32,13 @@
                 "isDefault": true
             },
             "detail": "Startet die Unittests (Container)"
+        },
+        {
+            "label": "publish",
+            "type": "shell",
+            "command": "mkdir -p publish && zip -r publish/SwissQRRechnung.zip app.py config Readme.md",
+            "problemMatcher": [],
+            "detail": "Packt alle relevanten Dateien in eine Zip-Datei im publish-Ordner"
         }
     ]
 }
