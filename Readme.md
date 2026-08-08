@@ -48,7 +48,7 @@ Das Mapping erfolgt wie folgt:
 | **Cdtr_PstCd** | Rechnungssteller.json | `PLZ` |
 | **Cdtr_TwnNm** | Rechnungssteller.json | `Ort` |
 | **Cdtr_Ctry** | Festwert | `CH` |
-| **Amt** | Rechnungsdaten (CSV) | `Klient` |
+| **Amt** | Rechnungsdaten (CSV) | `Klient` (auf zwei Nachkommastellen formatiert) |
 | **Ccy** | Festwert | `CHF` |
 | **UltmtDbtr_AdrTp** | Festwert | `S` |
 | **UltmtDbtr_Name** | Stammdaten (XLS) | `Vorname` + `Nachname` (Match via Name aus CSV) |
@@ -66,7 +66,6 @@ Das Mapping erfolgt wie folgt:
 | **FileName** | Logik | PDF-Dateiname (z.B. `Name_Vorname.pdf`) |
 | **Anrede** | Stammdaten (XLS) | `Anrede` |
 | **Nummer** | Stammdaten (XLS) | `Klienten-Nr.` |
-| **Email** | - | *leer* |
 
 **Logik:**
 

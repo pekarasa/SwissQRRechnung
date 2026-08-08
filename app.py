@@ -133,7 +133,7 @@ class FileProcessorHandler(FileSystemEventHandler):
                 'Cdtr_PstCd': self.rechnungssteller_config.get('PLZ', ''),
                 'Cdtr_TwnNm': self.rechnungssteller_config.get('Ort', ''),
                 'Cdtr_Ctry': 'CH',
-                'Amt': row['Betrag'],
+                'Amt': f"{float(row['Betrag']):.2f}",
                 'Ccy': 'CHF',
                 'UltmtDbtr_AdrTp': 'S',
                 'UltmtDbtr_Name': f"{vorname} {nachname}".strip(),
@@ -150,8 +150,7 @@ class FileProcessorHandler(FileSystemEventHandler):
                 'AltPmt2': '',
                 'FileName': filename,
                 'Anrede': row.get('Anrede', ''),
-                'Nummer': row.get('Klienten-Nr.', ''),
-                'Email': ''
+                'Nummer': row.get('Klienten-Nr.', '')
             })
 
         out_df = pd.DataFrame(records)
