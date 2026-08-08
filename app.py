@@ -82,6 +82,7 @@ class FileProcessorHandler(FileSystemEventHandler):
             rechnungen = csv_df[[0, 8]].dropna()
             rechnungen.columns = ['MatchName', 'Betrag']
             rechnungen['MatchName'] = rechnungen['MatchName'].str.strip()
+            rechnungen = rechnungen[~rechnungen['MatchName'].str.startswith('Gesamt')]
         except Exception as e:
             print(f"Fehler beim Lesen der Rechnungsdaten: {e}")
             return
