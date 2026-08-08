@@ -1,0 +1,27 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "setup",
+            "type": "shell",
+            "command": "pip install pandas watchdog requests odfpy xlrd",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Installiert Abhängigkeiten wie in Readme.md beschrieben (Container)"
+        },
+        {
+            "label": "start",
+            "type": "shell",
+            "command": "python app.py",
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "detail": "Startet die Applikation (Container)"
+        }
+    ]
+}
