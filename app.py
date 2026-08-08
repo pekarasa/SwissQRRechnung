@@ -103,6 +103,9 @@ class FileProcessorHandler(FileSystemEventHandler):
             print("Keine übereinstimmenden Klienten gefunden!")
             return
 
+        if len(merged) < len(rechnungen):
+            raise ValueError("Nicht alle Rechnungsdaten konnten in den Stammdaten gefunden werden!")
+
         # 4. Map to target ODS structure
         records = []
         for _, row in merged.iterrows():

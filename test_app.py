@@ -1,5 +1,6 @@
 import os
 import unittest
+from unittest.mock import patch
 import pandas as pd
 from app import FileProcessorHandler, load_config
 
@@ -19,6 +20,34 @@ class TestApp(unittest.TestCase):
         # Ensure we remove the CSV file if it exists to test its creation
         if os.path.exists(self.output_csv):
             os.remove(self.output_csv)
+
+    @patch('pandas.read_csv')
+    @patch('pandas.read_excel')
+    def test_missing_stammdaten_fails(self, mock_read_excel, mock_read_csv):
+        # Setup mock Rechnungsdaten
+        mock_csv_df = pd.DataFrame({
+            0: ['Mustermann, Herr Max', 'Nicht Vorhanden'],
+            8: [100.0, 50.0]
+        })
+        mock_read_csv.return_value = mock_csv_df
+
+        # Setup mock Stammdaten
+        mock_xls_df = pd.DataFrame({
+            'Nachname': ['Mustermann'],
+            'Vorname': ['Max'],
+            'Anrede': ['Herr'],
+            'MatchName': ['Max Mustermann'],
+            'Strasse Nr.': ['Teststrasse 1'],
+            'PLZ': [1234],
+            'Ort': ['Testort'],
+            'Klienten-Nr.': [1]
+        })
+        mock_read_excel.return_value = mock_xls_df
+
+        with self.assertRaises(ValueError) as context:
+            self.handler.process_files('dummy_stammdaten.xls', 'dummy_rechnungen.csv')
+
+        self.assertEqual(str(context.exception), "Nicht alle Rechnungsdaten konnten in den Stammdaten gefunden werden!")
 
     def test_end_to_end_processing(self):
         # Find paths
