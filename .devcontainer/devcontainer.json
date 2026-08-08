@@ -1,0 +1,19 @@
+{
+	"name": "SQR",
+	"build": {
+		"dockerfile": "devenv.dockerfile"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance"
+			],
+			"settings": {
+				"python.defaultInterpreterPath": "/usr/local/bin/python",
+				"python.analysis.typeCheckingMode": "basic"
+			}
+		}
+	},
+	"remoteUser": "vscode"
+}
