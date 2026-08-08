@@ -8,7 +8,7 @@
             "problemMatcher": [],
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false
             },
             "detail": "Installiert Abhängigkeiten wie in Readme.md beschrieben (Container)"
         },
@@ -18,10 +18,20 @@
             "command": "python app.py",
             "problemMatcher": [],
             "group": {
-                "kind": "test",
+                "kind": "build",
                 "isDefault": true
             },
             "detail": "Startet die Applikation (Container)"
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "command": "python -m unittest test_app.py",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "detail": "Startet die Unittests (Container)"
         }
     ]
 }
