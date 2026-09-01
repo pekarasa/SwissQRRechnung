@@ -39,8 +39,8 @@ class FileProcessorHandler(FileSystemEventHandler):
         rechnungs_path = self.find_latest_file(rechnungs_conf)
 
         if not stammdaten_path:
-            print("Stamm nicht gefunden.")
-            print("[„Weitere Aufgaben“ → „Liste + Auswertungen“ → „Vollständige Klientendaten nach Excel exportieren“]")
+            print("Stammdaten nicht gefunden.")
+            print("Exportiere die aktuellen Stammdaten mit: „Weitere Aufgaben“ → „Liste + Auswertungen“ → „Klientendaten für elektronische Rechnungsübermittlung prüfen“")
             return
 
         if not rechnungs_path:

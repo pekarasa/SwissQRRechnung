@@ -21,6 +21,16 @@ class TestApp(unittest.TestCase):
         if os.path.exists(self.output_csv):
             os.remove(self.output_csv)
 
+    @patch('builtins.print')
+    def test_stammdaten_not_found_message(self, mock_print):
+        # Configure handler with non-matching pattern for stammdaten
+        empty_config = {"Stammdaten": {"Path": "data", "Pattern": "non_matching_file_pattern_.*"}}
+        handler = FileProcessorHandler(empty_config, self.rechnungssteller_config)
+        handler.check_and_process()
+
+        mock_print.assert_any_call("Stammdaten nicht gefunden.")
+        mock_print.assert_any_call("Exportiere die aktuellen Stammdaten mit: „Weitere Aufgaben“ → „Liste + Auswertungen“ → „Klientendaten für elektronische Rechnungsübermittlung prüfen“")
+
     @patch('pandas.read_csv')
     @patch('pandas.read_excel')
     def test_missing_stammdaten_fails(self, mock_read_excel, mock_read_csv):
