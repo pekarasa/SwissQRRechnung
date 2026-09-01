@@ -31,7 +31,7 @@ Diese Datei wird mithilfe einer Browser-Automatisierung (Playwright) auf die Web
 
 ## QR-Rechnungen.csv
 
-Die Zieldatei `data\QR-Rechnungen.csv` wird aus den konfigurierten Stammdaten, Rechnungsdaten und der Rechnungssteller-Konfiguration generiert.
+Die Zieldatei `data\QR-Rechnungen.csv` wird aus den konfigurierten Stammdaten, Rechnungsdaten und der Rechnungssteller-Konfiguration im **ANSI-Format** (Windows-1252 / `cp1252`) generiert.
 
 ### Mapping
 

@@ -67,9 +67,9 @@ class TestApp(unittest.TestCase):
 
         # Read the CSV and verify content
         print(f"Generierte csv-Datei: {self.output_csv}")
-        df_generated = pd.read_csv(self.output_csv, sep=',', encoding='utf-8')
+        df_generated = pd.read_csv(self.output_csv, sep=',', encoding='cp1252')
         print(f"Erwartete csv-Datei: {self.expected_csv}")
-        df_expected = pd.read_csv(self.expected_csv, sep=',', encoding='utf-8')
+        df_expected = pd.read_csv(self.expected_csv, sep=',', encoding='cp1252')
 
         self.assertGreater(len(df_generated), 0, "Die generierte csv-Datei ist leer")
 

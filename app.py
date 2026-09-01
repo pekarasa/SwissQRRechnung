@@ -179,7 +179,7 @@ class FileProcessorHandler(FileSystemEventHandler):
         csv_filepath = os.path.join(out_path, csv_filename)
 
         try:
-            out_df.to_csv(csv_filepath, index=False, sep=',', encoding='utf-8')
+            out_df.to_csv(csv_filepath, index=False, sep=',', encoding='cp1252')
             print(f"CSV-Datei erfolgreich erstellt: {csv_filepath}")
         except Exception as e:
             print(f"Fehler beim Erstellen der CSV-Datei: {e}")

@@ -1,5 +1,5 @@
-ï»¿Lang,IBAN,Cdtr_AdrTp,Cdtr_Name,Cdtr_StrtNmOrAdrLine1,Cdtr_BldgNbOrAdrLine2,Cdtr_PstCd,Cdtr_TwnNm,Cdtr_Ctry,Amt,Ccy,UltmtDbtr_AdrTp,UltmtDbtr_Name,UltmtDbtr_StrtNmOrAdrLine1,UltmtDbtr_BldgNbOrAdrLine2,UltmtDbtr_PstCd,UltmtDbtr_TwnNm,UltmtDbtr_Ctry,RefTp,Ref,Ustrd,StrdBkgInf,AltPmt1,AltPmt2,FileName,Anrede,Nummer
+Lang,IBAN,Cdtr_AdrTp,Cdtr_Name,Cdtr_StrtNmOrAdrLine1,Cdtr_BldgNbOrAdrLine2,Cdtr_PstCd,Cdtr_TwnNm,Cdtr_Ctry,Amt,Ccy,UltmtDbtr_AdrTp,UltmtDbtr_Name,UltmtDbtr_StrtNmOrAdrLine1,UltmtDbtr_BldgNbOrAdrLine2,UltmtDbtr_PstCd,UltmtDbtr_TwnNm,UltmtDbtr_Ctry,RefTp,Ref,Ustrd,StrdBkgInf,AltPmt1,AltPmt2,FileName,Anrede,Nummer
 de,CH5691006ZN0KQ3CKLIB8,S,Peter Portmann,Silandro,2,4450,Sissach,CH,48.00,CHF,S,Sandra Meier,Hauptstrasse,43,4450,Sissach,CH,NON,,Klientenanteil Spitex,,,,Meier_Sandra.pdf,Frau,181
-de,CH5691006ZN0KQ3CKLIB8,S,Peter Portmann,Silandro,2,4450,Sissach,CH,13.40,CHF,S,Walter Steiner,KÃ¶hlerweg,9,4450,Sissach,CH,NON,,Klientenanteil Spitex,,,,Steiner_Walter.pdf,Herr,182
-de,CH5691006ZN0KQ3CKLIB8,S,Peter Portmann,Silandro,2,4450,Sissach,CH,30.60,CHF,S,Bruno KnÃ¼sel,Hauptstrasse,57,4460,Gelterkinden,CH,NON,,Klientenanteil Spitex,,,,KnÃ¼sel_Bruno.pdf,Herr,184
+de,CH5691006ZN0KQ3CKLIB8,S,Peter Portmann,Silandro,2,4450,Sissach,CH,13.40,CHF,S,Walter Steiner,Köhlerweg,9,4450,Sissach,CH,NON,,Klientenanteil Spitex,,,,Steiner_Walter.pdf,Herr,182
+de,CH5691006ZN0KQ3CKLIB8,S,Peter Portmann,Silandro,2,4450,Sissach,CH,30.60,CHF,S,Bruno Knüsel,Hauptstrasse,57,4460,Gelterkinden,CH,NON,,Klientenanteil Spitex,,,,Knüsel_Bruno.pdf,Herr,184
 de,CH5691006ZN0KQ3CKLIB8,S,Peter Portmann,Silandro,2,4450,Sissach,CH,45.90,CHF,S,Carmen Wagner,Himmelrain,34a,4450,Sissach,CH,NON,,Klientenanteil Spitex,,,,Wagner_Carmen.pdf,Frau,183
