@@ -96,7 +96,10 @@ class FileProcessorHandler(FileSystemEventHandler):
 
         # 2. Read Stammdaten (XLS)
         try:
-            xls_df = pd.read_excel(stammdaten_path)
+            if str(stammdaten_path).endswith('.xls'):
+                xls_df = pd.read_excel(stammdaten_path, engine_kwargs={'ignore_workbook_corruption': True})
+            else:
+                xls_df = pd.read_excel(stammdaten_path)
             # Create matching name
             # Handle NaN values in Name parts safely
             xls_df['MatchName'] = xls_df['Nachname'].fillna('') + ', ' + xls_df['Anrede'].fillna('') + ' ' + xls_df['Vorname'].fillna('')
