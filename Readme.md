@@ -3,9 +3,24 @@
 Es soll ein Programm entwickelt werden, das einen Ordner auf bestimmte Dateien überwacht. Sobald die Stamm- und Rechnungsdaten gefunden wurden, werden sie in einer neuen Datei zusammengestellt und an eine Website geschickt, um daraus ein PDF zu erstellen. Nach einem Durchlauf beendet sich das Programm und gibt aus, ob eine PDF erstellt werden konnte, ob Stamm- oder Rechnungsdaten nicht gefunden wurden oder ob ein anderer Fehler aufgetreten ist.
 Das Programm läuft unter Linux.
 
+## Programminstallation
+
+1. Entpacke die ausgelieferte zip-Datei nach ~/Applications/SwissQRRechnung
+2. Installiere phyten und die notwendigen Abhängigkeiten:
+    ```bash
+    sudo apt install python3.14-venv
+    python3 -m venv .venv
+    pip install pandas watchdog playwright odfpy xlrd requests
+    playwright install chromium
+    ```
+
+## Programmkonfiguration
+
+Konfiguriere das Programm, indem du `nano ./config/Rechnungssteller.json` ausführst und die korrekten Daten eingibst.
+
 ## Programmstart
 
-Das Programm kann mit `python app.py` gestartet werden. Zuvor müssen die Abhängigkeiten via `pip install pandas watchdog playwright odfpy xlrd` installiert werden. Zusätzlich müssen die Playwright-Browser installiert werden, z.B. mit dem Befehl `playwright install chromium`.
+Das Programm kann mit `python app.py` im Verzeicnis `~/Applications/SwissQRRechnung` gestartet werden. 
 
 ## Stammdaten
 
