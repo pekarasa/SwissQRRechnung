@@ -1,5 +1,13 @@
 {
 	"name": "SQR",
+    // Liest die Variablen aus der .env-Datei:
+    "runArgs": [
+        "--env-file", ".devcontainer/.env"
+    ],
+    // Das Zertifikat muss als Datei trotzdem in den Container gemountet werden:
+    "mounts": [
+        "source=${localEnv:USERPROFILE}/ThalesCerts.pem,target=/usr/local/share/ca-certificates/ThalesCerts.pem,type=bind,readonly"
+    ],
 	"build": {
 		"dockerfile": "devenv.dockerfile"
 	},
