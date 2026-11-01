@@ -8,14 +8,14 @@ erledigt werden.
 
 ---
 
-## Etappe 1: Core (Parser, Merge, Mapping, CSV) `[ ]`
+## Etappe 1: Core (Parser, Merge, Mapping, CSV) `[~]`
 
 Ziel: Aus den Beispieldateien entsteht dieselbe `QR-Rechnungen.csv` wie in der Python-Version.
 
 Aufgaben
-- [ ] `extension\` anlegen: `package.json`, `tsconfig.json`, Vitest, ESLint/Prettier (optional), `.gitignore` (`node_modules`, `dist`).
-- [ ] `node -v` / `npm -v` prüfen.
-- [ ] Fixtures aus `..\data` nach `extension\test\fixtures` kopieren (Stammdaten-XLS, Rechnungs-CSV, Referenz-CSV, Referenz-PDF).
+- [x] `extension\` anlegen: `package.json`, `tsconfig.json`, Vitest, ESLint/Prettier (optional), `.gitignore` (`node_modules`, `dist`).
+- [x] `node -v` / `npm -v` prüfen.
+- [x] Fixtures aus `..\data` nach `extension\test\fixtures` kopieren (Stammdaten-XLS, Rechnungs-CSV, Referenz-CSV, Referenz-PDF).
 - [ ] `encoding.ts`: cp1252 decodieren/encodieren, Erkennung UTF-8 vs. cp1252.
 - [ ] `parseInvoices.ts`: Tab-CSV, Kopf überspringen, Spalte 0 und 8, `Gesamt*` und Leerzeilen ignorieren, Tausender-Hochkomma.
 - [ ] `parseClients.ts`: SheetJS-Parser, tolerant bei defekter Workbook-Struktur; Nicht-Klienten (leere Anrede/Name) ignorieren; PLZ als Ganzzahl-String.
