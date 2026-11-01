@@ -19,7 +19,7 @@ Aufgaben
 - [x] `encoding.ts`: cp1252 decodieren/encodieren, Erkennung UTF-8 vs. cp1252.
 - [ ] `parseInvoices.ts`: Tab-CSV, Kopf überspringen, Spalte 0 und 8, `Gesamt*` und Leerzeilen ignorieren, Tausender-Hochkomma.
 - [ ] `parseClients.ts`: SheetJS-Parser, tolerant bei defekter Workbook-Struktur; Nicht-Klienten (leere Anrede/Name) ignorieren; PLZ als Ganzzahl-String.
-- [ ] `address.ts`: Strasse/Nr. trennen (Regex aus Python, Tests: `Himmelrain 34a`, `Hauptstrasse 43`, ohne Nummer, Zusätze wie `Bahnhofstr. 5 b`, `Rue de la Gare 12`).
+- [x] `address.ts`: Strasse/Nr. trennen (Regex aus Python, Tests: `Himmelrain 34a`, `Hauptstrasse 43`, ohne Nummer, Zusätze wie `Bahnhofstr. 5 b`, `Rue de la Gare 12`).
 - [ ] `merge.ts`: Join über `Nachname, Anrede Vorname`; Ergebnis mit `matched[]` und `unmatched[]` (nicht werfen, sondern auswertbar).
 - [ ] `mapping.ts` + `csv.ts`: 26 Zielspalten in Originalreihenfolge, `Amt` mit 2 Nachkommastellen, Escaping (Komma/Anführungszeichen), Zeilenende wie Referenz prüfen (CRLF/LF).
 - [ ] Test: Ausgabe (cp1252-Bytes) == `data\QR-Rechnungen.csv` bytegenau (ggf. Zeilenende angleichen und dokumentieren).
