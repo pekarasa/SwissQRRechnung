@@ -8,7 +8,7 @@ erledigt werden.
 
 ---
 
-## Etappe 1: Core (Parser, Merge, Mapping, CSV) `[~]`
+## Etappe 1: Core (Parser, Merge, Mapping, CSV) `[x]`
 
 Ziel: Aus den Beispieldateien entsteht dieselbe `QR-Rechnungen.csv` wie in der Python-Version.
 
@@ -21,9 +21,9 @@ Aufgaben
 - [x] `parseClients.ts`: SheetJS-Parser, tolerant bei defekter Workbook-Struktur; Nicht-Klienten (leere Anrede/Name) ignorieren; PLZ als Ganzzahl-String.
 - [x] `address.ts`: Strasse/Nr. trennen (Regex aus Python, Tests: `Himmelrain 34a`, `Hauptstrasse 43`, ohne Nummer, Zusätze wie `Bahnhofstr. 5 b`, `Rue de la Gare 12`).
 - [x] `merge.ts`: Join über `Nachname, Anrede Vorname`; Ergebnis mit `matched[]` und `unmatched[]` (nicht werfen, sondern auswertbar).
-- [ ] `mapping.ts` + `csv.ts`: 26 Zielspalten in Originalreihenfolge, `Amt` mit 2 Nachkommastellen, Escaping (Komma/Anführungszeichen), Zeilenende wie Referenz prüfen (CRLF/LF).
-- [ ] Test: Ausgabe (cp1252-Bytes) == `data\QR-Rechnungen.csv` bytegenau (ggf. Zeilenende angleichen und dokumentieren).
-- [ ] Tests für Fehlerfälle: Stammdaten leer, Rechnungsdaten leer, Klient ohne Stammdaten, Betrag ungültig.
+- [x] `mapping.ts` + `csv.ts`: 26 Zielspalten in Originalreihenfolge, `Amt` mit 2 Nachkommastellen, Escaping (Komma/Anführungszeichen), Zeilenende wie Referenz prüfen (CRLF/LF).
+- [x] Test: Ausgabe (cp1252-Bytes) == `data\QR-Rechnungen.csv` bytegenau (ggf. Zeilenende angleichen und dokumentieren).
+- [x] Tests für Fehlerfälle: Stammdaten leer, Rechnungsdaten leer, Klient ohne Stammdaten, Betrag ungültig.
 
 Abnahme: `npm test` grün; Referenz-CSV wird reproduziert.
 
