@@ -17,7 +17,7 @@ Aufgaben
 - [x] `node -v` / `npm -v` prüfen.
 - [x] Fixtures aus `..\data` nach `extension\test\fixtures` kopieren (Stammdaten-XLS, Rechnungs-CSV, Referenz-CSV, Referenz-PDF).
 - [x] `encoding.ts`: cp1252 decodieren/encodieren, Erkennung UTF-8 vs. cp1252.
-- [ ] `parseInvoices.ts`: Tab-CSV, Kopf überspringen, Spalte 0 und 8, `Gesamt*` und Leerzeilen ignorieren, Tausender-Hochkomma.
+- [x] `parseInvoices.ts`: Tab-CSV, Kopf überspringen, Spalte 0 und 8, `Gesamt*` und Leerzeilen ignorieren, Tausender-Hochkomma.
 - [ ] `parseClients.ts`: SheetJS-Parser, tolerant bei defekter Workbook-Struktur; Nicht-Klienten (leere Anrede/Name) ignorieren; PLZ als Ganzzahl-String.
 - [x] `address.ts`: Strasse/Nr. trennen (Regex aus Python, Tests: `Himmelrain 34a`, `Hauptstrasse 43`, ohne Nummer, Zusätze wie `Bahnhofstr. 5 b`, `Rue de la Gare 12`).
 - [ ] `merge.ts`: Join über `Nachname, Anrede Vorname`; Ergebnis mit `matched[]` und `unmatched[]` (nicht werfen, sondern auswertbar).
