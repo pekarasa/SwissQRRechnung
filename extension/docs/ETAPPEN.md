@@ -46,17 +46,17 @@ Abnahme: Klick auf den Button liefert beide Dateien im Speicher und die Etappe-1
 
 ---
 
-## Etappe 3: PDF lokal erzeugen `[ ]`
+## Etappe 3: PDF lokal erzeugen `[x]`
 
 Ziel: Gleichwertiges PDF wie `data\QR-Rechnungen.pdf`, ohne qr-rechnung.net.
 
 Aufgaben
-- [ ] Prototyp mit `swissqrbill` + `pdf-lib`: A4, Zahlteil unten, eine Seite pro Klient in CSV-Reihenfolge.
-- [ ] Inhalt gemäss `SESSION-WISSEN.md` Abschnitt 7 (IBAN gruppiert, `NON`, «Klientenanteil Spitex»).
-- [ ] Validierung vor der Erzeugung: IBAN (Prüfsumme), Länge/Zeichensatz der Adressfelder nach SIX-Standard, Betrag > 0.
-- [ ] Umlaute korrekt (Köhlerweg, Knüsel).
-- [ ] Vergleich mit Referenz-PDF: Text je Seite (pdf-parse) und visuell; QR-Payload mit einem QR-Scanner/Bibliothek prüfen.
-- [ ] Optional: ein Einzel-PDF pro Klient (`FileName`) als ZIP.
+- [x] Prototyp mit `swissqrbill` + `pdf-lib`: A4, Zahlteil unten, eine Seite pro Klient in CSV-Reihenfolge.
+- [x] Inhalt gemäss `SESSION-WISSEN.md` Abschnitt 7 (IBAN gruppiert, `NON`, «Klientenanteil Spitex»).
+- [x] Validierung vor der Erzeugung: IBAN (Prüfsumme), Länge/Zeichensatz der Adressfelder nach SIX-Standard, Betrag > 0.
+- [x] Umlaute korrekt (Köhlerweg, Knüsel).
+- [x] Vergleich mit Referenz-PDF: Text je Seite (pdf-parse) und visuell; QR-Payload mit einem QR-Scanner/Bibliothek prüfen.
+- [x] Optional: ein Einzel-PDF pro Klient (`FileName`) als ZIP.
 
 Abnahme: PDF in Referenz und neue PDF sind inhaltlich gleich, QR-Code liest sich in einer Bank-App/Validator.
 
