@@ -3,13 +3,20 @@
 	"build": {
 		"dockerfile": "devenv.dockerfile"
 	},
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "lts"
+		}
+	},
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"actboy168.tasks",
 				"ms-python.python",
 				"ms-python.vscode-pylance",
-				"EditorConfig.EditorConfig"
+				"EditorConfig.EditorConfig",
+				"dbaeumer.vscode-eslint",
+				"esbenp.prettier-vscode"
 			],
 			"settings": {
 				"python.defaultInterpreterPath": "/usr/local/bin/python",
@@ -17,5 +24,6 @@
 			}
 		}
 	},
+	"postCreateCommand": "if [ -f extension/package.json ]; then npm install --prefix extension; fi",
 	"remoteUser": "vscode"
 }
