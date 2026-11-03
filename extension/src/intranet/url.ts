@@ -62,21 +62,26 @@ function cleanBaseUrl(baseUrl?: string): string {
 
 /**
  * Constructs the URL for the client master data export.
- * VeruA endpoint: listClientsExportEkarus.php?aktiv=1
+ * VeruA endpoint: listen/listClientsExportEkarus.php?aktiv=1
  */
-export function buildClientExportUrl(baseUrl?: string, aktiv = 1): string {
+export function buildClientExportUrl(baseUrl?: string, aktiv = 1, customPath?: string): string {
   const clean = cleanBaseUrl(baseUrl);
-  const path = `listClientsExportEkarus.php?aktiv=${aktiv}`;
+  const basePath = (customPath ? customPath.replace(/\?.*$/, '') : 'listen/listClientsExportEkarus.php').replace(/^\/+/, '');
+  const path = `${basePath}?aktiv=${aktiv}`;
   return clean ? `${clean}/${path}` : path;
 }
 
 /**
  * Constructs the URL for the invoice data export.
  * VeruA endpoint:
- * betraege_gesamt_detail_ZR_Export.php?owner=1&sprache=DE&kuerzel_kanton=O_K&id_kanton=0&v_jahr=2026&v_monat=07&b_monat=07
+ * Rechnung/betraege_gesamt_detail_ZR_Export.php?owner=1&sprache=DE&kuerzel_kanton=O_K&id_kanton=0&v_jahr=2026&v_monat=07&b_monat=07
  * Note: Never append trailing quotes (%27) which were observed as copy artifacts in JavaScript links.
  */
-export function buildInvoiceExportUrl(baseUrl: string | undefined, params: InvoiceExportParams): string {
+export function buildInvoiceExportUrl(
+  baseUrl: string | undefined,
+  params: InvoiceExportParams,
+  customPath?: string,
+): string {
   const {
     owner = 1,
     sprache = 'DE',
@@ -107,6 +112,7 @@ export function buildInvoiceExportUrl(baseUrl: string | undefined, params: Invoi
   });
 
   const clean = cleanBaseUrl(baseUrl);
-  const path = `betraege_gesamt_detail_ZR_Export.php?${query.toString()}`;
+  const basePath = (customPath ? customPath.replace(/\?.*$/, '') : 'Rechnung/betraege_gesamt_detail_ZR_Export.php').replace(/^\/+/, '');
+  const path = `${basePath}?${query.toString()}`;
   return clean ? `${clean}/${path}` : path;
 }

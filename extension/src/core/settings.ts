@@ -40,8 +40,8 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
     idKanton: 0,
   },
   customUrls: {
-    clientsPath: 'listClientsExportEkarus.php?aktiv=1',
-    invoicesPath: 'betraege_gesamt_detail_ZR_Export.php',
+    clientsPath: 'listen/listClientsExportEkarus.php?aktiv=1',
+    invoicesPath: 'Rechnung/betraege_gesamt_detail_ZR_Export.php',
   },
 };
 

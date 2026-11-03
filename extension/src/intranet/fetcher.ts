@@ -1,4 +1,5 @@
 import { decodeAuto } from '../core/encoding.js';
+import type { CustomUrlsConfig } from '../core/settings.js';
 import {
   buildClientExportUrl,
   buildInvoiceExportUrl,
@@ -8,6 +9,7 @@ import {
 export interface FetchOptions {
   fetchFn?: typeof fetch;
   baseUrl?: string;
+  customUrls?: CustomUrlsConfig;
 }
 
 export interface IntranetExportData {
@@ -80,7 +82,7 @@ export async function fetchClientsExport(
     throw new Error('Keine fetch-Funktion verfügbar.');
   }
 
-  const url = buildClientExportUrl(options.baseUrl, options.aktiv ?? 1);
+  const url = buildClientExportUrl(options.baseUrl, options.aktiv ?? 1, options.customUrls?.clientsPath);
 
   let response: Response;
   try {
@@ -121,7 +123,7 @@ export async function fetchInvoicesExport(
     throw new Error('Keine fetch-Funktion verfügbar.');
   }
 
-  const url = buildInvoiceExportUrl(options.baseUrl, params);
+  const url = buildInvoiceExportUrl(options.baseUrl, params, options.customUrls?.invoicesPath);
 
   let response: Response;
   try {

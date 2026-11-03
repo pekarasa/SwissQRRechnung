@@ -49,17 +49,23 @@ describe('Intranet URL and Period helpers', () => {
 
   describe('buildClientExportUrl', () => {
     it('builds relative URL without baseUrl', () => {
-      expect(buildClientExportUrl()).toBe('listClientsExportEkarus.php?aktiv=1');
-      expect(buildClientExportUrl(undefined, 0)).toBe('listClientsExportEkarus.php?aktiv=0');
+      expect(buildClientExportUrl()).toBe('listen/listClientsExportEkarus.php?aktiv=1');
+      expect(buildClientExportUrl(undefined, 0)).toBe('listen/listClientsExportEkarus.php?aktiv=0');
     });
 
     it('builds absolute URL with baseUrl and handles trailing slashes', () => {
       expect(buildClientExportUrl('https://oetterli.verua.org')).toBe(
-        'https://oetterli.verua.org/listClientsExportEkarus.php?aktiv=1',
+        'https://oetterli.verua.org/listen/listClientsExportEkarus.php?aktiv=1',
       );
       expect(buildClientExportUrl('https://oetterli.verua.org/')).toBe(
-        'https://oetterli.verua.org/listClientsExportEkarus.php?aktiv=1',
+        'https://oetterli.verua.org/listen/listClientsExportEkarus.php?aktiv=1',
       );
+    });
+
+    it('supports custom paths', () => {
+      expect(
+        buildClientExportUrl('https://oetterli.verua.org', 1, 'custom/export.php'),
+      ).toBe('https://oetterli.verua.org/custom/export.php?aktiv=1');
     });
   });
 
@@ -74,7 +80,7 @@ describe('Intranet URL and Period helpers', () => {
       });
 
       expect(url).toBe(
-        'https://oetterli.verua.org/betraege_gesamt_detail_ZR_Export.php?owner=1&sprache=DE&kuerzel_kanton=O_K&id_kanton=0&v_jahr=2026&v_monat=07&b_monat=07',
+        'https://oetterli.verua.org/Rechnung/betraege_gesamt_detail_ZR_Export.php?owner=1&sprache=DE&kuerzel_kanton=O_K&id_kanton=0&v_jahr=2026&v_monat=07&b_monat=07',
       );
       // Ensure no trailing quote or %27 artifact
       expect(url).not.toContain('%27');
@@ -91,7 +97,7 @@ describe('Intranet URL and Period helpers', () => {
       });
 
       expect(url).toBe(
-        'https://oetterli.verua.org/betraege_gesamt_detail_ZR_Export.php?owner=1&sprache=DE&kuerzel_kanton=O_K&id_kanton=0&v_jahr=2026&v_monat=09&b_monat=10',
+        'https://oetterli.verua.org/Rechnung/betraege_gesamt_detail_ZR_Export.php?owner=1&sprache=DE&kuerzel_kanton=O_K&id_kanton=0&v_jahr=2026&v_monat=09&b_monat=10',
       );
     });
 
@@ -109,8 +115,19 @@ describe('Intranet URL and Period helpers', () => {
       });
 
       expect(url).toBe(
-        'https://demo.verua.org/betraege_gesamt_detail_ZR_Export.php?owner=2&sprache=FR&kuerzel_kanton=ZH&id_kanton=1&v_jahr=2025&v_monat=03&b_monat=05',
+        'https://demo.verua.org/Rechnung/betraege_gesamt_detail_ZR_Export.php?owner=2&sprache=FR&kuerzel_kanton=ZH&id_kanton=1&v_jahr=2025&v_monat=03&b_monat=05',
       );
+    });
+
+    it('supports custom invoice paths', () => {
+      const url = buildInvoiceExportUrl(
+        'https://oetterli.verua.org',
+        {
+          period: { year: 2026, fromMonth: 1, toMonth: 1 },
+        },
+        'custom/invoice_export.php',
+      );
+      expect(url).toContain('https://oetterli.verua.org/custom/invoice_export.php?owner=1');
     });
 
     it('throws error when fromMonth is after toMonth', () => {

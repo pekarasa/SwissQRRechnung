@@ -4,9 +4,28 @@ import {
   DEFAULT_APP_SETTINGS,
   isCreditorConfigured,
   type AppSettings,
+  type CustomUrlsConfig,
 } from '../core/settings.js';
 
 export { DEFAULT_CREDITOR };
+
+function sanitizeCustomUrls(urls?: Partial<CustomUrlsConfig>): CustomUrlsConfig {
+  let clientsPath = urls?.clientsPath || DEFAULT_APP_SETTINGS.customUrls.clientsPath;
+  let invoicesPath = urls?.invoicesPath || DEFAULT_APP_SETTINGS.customUrls.invoicesPath;
+
+  // Migrate old defaults without subdirectory prefix
+  if (
+    clientsPath === 'listClientsExportEkarus.php?aktiv=1' ||
+    clientsPath === 'listClientsExportEkarus.php'
+  ) {
+    clientsPath = DEFAULT_APP_SETTINGS.customUrls.clientsPath;
+  }
+  if (invoicesPath === 'betraege_gesamt_detail_ZR_Export.php') {
+    invoicesPath = DEFAULT_APP_SETTINGS.customUrls.invoicesPath;
+  }
+
+  return { clientsPath, invoicesPath };
+}
 
 declare const browser: {
   storage?: {
@@ -40,9 +59,11 @@ export async function loadAppSettings(): Promise<AppSettings> {
     if (typeof browser !== 'undefined' && browser.storage?.local) {
       const res = await browser.storage.local.get(['settings', 'creditor']);
       if (res.settings && typeof res.settings === 'object') {
+        const loaded = res.settings as Partial<AppSettings>;
         return {
           ...DEFAULT_APP_SETTINGS,
-          ...(res.settings as Partial<AppSettings>),
+          ...loaded,
+          customUrls: sanitizeCustomUrls(loaded.customUrls),
         };
       }
       if (res.creditor && typeof res.creditor === 'object') {
@@ -58,9 +79,11 @@ export async function loadAppSettings(): Promise<AppSettings> {
         });
       });
       if (res.settings && typeof res.settings === 'object') {
+        const loaded = res.settings as Partial<AppSettings>;
         return {
           ...DEFAULT_APP_SETTINGS,
-          ...(res.settings as Partial<AppSettings>),
+          ...loaded,
+          customUrls: sanitizeCustomUrls(loaded.customUrls),
         };
       }
       if (res.creditor && typeof res.creditor === 'object') {

@@ -87,10 +87,10 @@ function formatErrorMessage(err: unknown): string {
     return 'Ihre VeruA-Sitzung ist abgelaufen. Bitte melden Sie sich im Intranet erneut an und versuchen Sie es nochmals.';
   }
   if (msg.includes('Stammdaten') && msg.includes('nicht gefunden')) {
-    return 'Stammdaten konnten nicht abgerufen werden. Bitte stellen Sie sicher, dass Sie im VeruA-Intranet eingeloggt sind und der Export "Vollständige Klientendaten nach Excel exportieren" (listClientsExportEkarus.php?aktiv=1) verfügbar ist.';
+    return 'Stammdaten konnten nicht abgerufen werden. Bitte stellen Sie sicher, dass Sie im VeruA-Intranet eingeloggt sind und der Export "Vollständige Klientendaten nach Excel exportieren" (listen/listClientsExportEkarus.php?aktiv=1) verfügbar ist.';
   }
   if (msg.includes('Rechnungsdaten') && msg.includes('nicht gefunden')) {
-    return 'Rechnungsdaten konnten nicht abgerufen werden. Bitte prüfen Sie im VeruA-Intranet den Export "Daten nach Excel // OpenOffice exportieren" (betraege_gesamt_detail_ZR_Export.php).';
+    return 'Rechnungsdaten konnten nicht abgerufen werden. Bitte prüfen Sie im VeruA-Intranet den Export "Daten nach Excel // OpenOffice exportieren" (Rechnung/betraege_gesamt_detail_ZR_Export.php).';
   }
 
   return msg;
@@ -372,6 +372,7 @@ export async function openQrBillModal(): Promise<void> {
         period,
         creditor: settings.creditor,
         exportParams: settings.exportParams,
+        customUrls: settings.customUrls,
         unstructuredMessage: settings.unstructuredMessage,
       });
 
