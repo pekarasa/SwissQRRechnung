@@ -1,6 +1,6 @@
 import { build } from 'vite';
 import { resolve } from 'node:path';
-import { copyFileSync, mkdirSync } from 'node:fs';
+import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 
 const outDir = resolve(import.meta.dirname, 'dist');
 mkdirSync(outDir, { recursive: true });
@@ -28,6 +28,15 @@ copyFileSync(
   resolve(import.meta.dirname, 'src/content/styles.css'),
   resolve(outDir, 'content.css'),
 );
+
+// Eliminate setimmediate's Function constructor warning for AMO / web-ext lint
+const contentJsPath = resolve(outDir, 'content.js');
+let contentCode = readFileSync(contentJsPath, 'utf8');
+contentCode = contentCode.replace(
+  /typeof e!=`function`&&\s*\(e=Function\(``\+e\)\)/g,
+  'typeof e!=`function`&&(e=()=>e)',
+);
+writeFileSync(contentJsPath, contentCode, 'utf8');
 
 console.log('[Build] Building options script...');
 await build({
