@@ -42,13 +42,14 @@ export function printPdf(pdfBytes: Uint8Array): void {
   const url = URL.createObjectURL(blob);
   const win = window.open(url, '_blank');
   if (win) {
-    win.addEventListener('load', () => {
-      try {
-        win.print();
-      } catch {
-        // Fallback: user prints from native browser PDF controls
-      }
-    });
+    try {
+      win.focus();
+      win.print();
+    } catch {
+      // In Firefox, internal PDF viewer (PDF.js) is isolated as a cross-origin object,
+      // which denies direct property/method access (SecurityError).
+      // The PDF is opened in the new tab where the user can print using Ctrl+P or the native print button.
+    }
   }
 }
 
