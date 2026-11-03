@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SwissQRRechnung – Einstellungen</title>
+  <link rel="stylesheet" href="../dist/options.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="title-group">
+        <span class="flag-badge">🇨🇭 QR</span>
+        <div>
+          <h1>SwissQRRechnung</h1>
+          <div class="subtitle">Einstellungen &amp; Rechnungssteller</div>
+        </div>
+      </div>
+    </header>
+
+    <div id="status-alert" class="alert hidden" role="alert"></div>
+
+    <form id="options-form" novalidate>
+      <section class="card">
+        <h2 class="card-title">Rechnungssteller</h2>
+        <p class="card-desc">
+          Diese Angaben erscheinen auf dem Schweizer QR-Zahlteil (Konto / Zahlbar an).
+          Sie können Ihre bestehende <code>Rechnungssteller.json</code> direkt importieren.
+        </p>
+
+        <div class="form-grid">
+          <div class="form-group form-grid-full">
+            <label for="iban">IBAN <span class="req">*</span></label>
+            <input type="text" id="iban" placeholder="CH56 9100 6ZN0 KQ3C KLIB 8" spellcheck="false" autocomplete="off" required>
+            <span class="field-error" id="error-iban"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="firstName">Vorname</label>
+            <input type="text" id="firstName" placeholder="Peter" autocomplete="given-name">
+            <span class="field-error" id="error-firstName"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Nachname <span class="req">*</span></label>
+            <input type="text" id="lastName" placeholder="Portmann" autocomplete="family-name" required>
+            <span class="field-error" id="error-lastName"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="street">Strasse <span class="req">*</span></label>
+            <input type="text" id="street" placeholder="Silandro" autocomplete="address-line1" required>
+            <span class="field-error" id="error-street"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="buildingNumber">Hausnummer</label>
+            <input type="text" id="buildingNumber" placeholder="2" autocomplete="address-line2">
+            <span class="field-error" id="error-buildingNumber"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="zipCode">Postleitzahl (PLZ) <span class="req">*</span></label>
+            <input type="text" id="zipCode" placeholder="4450" autocomplete="postal-code" required>
+            <span class="field-error" id="error-zipCode"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="city">Ort <span class="req">*</span></label>
+            <input type="text" id="city" placeholder="Sissach" autocomplete="address-level2" required>
+            <span class="field-error" id="error-city"></span>
+          </div>
+        </div>
+
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary" id="btn-save">
+            💾 Einstellungen speichern
+          </button>
+          <button type="button" class="btn btn-secondary" id="btn-import">
+            📁 Rechnungssteller.json importieren
+          </button>
+          <button type="button" class="btn btn-secondary" id="btn-export">
+            ⬇ Als Rechnungssteller.json exportieren
+          </button>
+          <button type="button" class="btn btn-secondary" id="btn-load-sample">
+            🔄 Testdaten laden
+          </button>
+          <input type="file" id="file-import" accept=".json" class="hidden">
+        </div>
+      </section>
+
+      <details>
+        <summary>
+          <span>Erweiterte Parameter (VeruA &amp; Export)</span>
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">Optional</span>
+        </summary>
+        <div class="details-content">
+          <p class="card-desc">
+            Passen Sie diese Werte nur an, wenn Ihr VeruA-System abweichende Export-Parameter oder Pfade erfordert.
+          </p>
+
+          <div class="form-grid">
+            <div class="form-group form-grid-full">
+              <label for="unstructuredMessage">Zusätzliche Informationen (Verwendungszweck)</label>
+              <input type="text" id="unstructuredMessage" placeholder="Klientenanteil Spitex">
+              <span class="field-error" id="error-unstructuredMessage"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="kuerzelKanton">Kantonskürzel</label>
+              <input type="text" id="kuerzelKanton" placeholder="O_K">
+            </div>
+
+            <div class="form-group">
+              <label for="idKanton">Kanton ID</label>
+              <input type="number" id="idKanton" placeholder="0">
+            </div>
+
+            <div class="form-group">
+              <label for="owner">Owner / Mandanten-ID</label>
+              <input type="number" id="owner" placeholder="1">
+            </div>
+
+            <div class="form-group">
+              <label for="sprache">Sprache</label>
+              <input type="text" id="sprache" placeholder="DE">
+            </div>
+
+            <div class="form-group form-grid-full">
+              <label for="clientsPath">Klientendaten Export-Pfad</label>
+              <input type="text" id="clientsPath" placeholder="listClientsExportEkarus.php?aktiv=1">
+            </div>
+
+            <div class="form-group form-grid-full">
+              <label for="invoicesPath">Rechnungsdaten Export-Pfad</label>
+              <input type="text" id="invoicesPath" placeholder="betraege_gesamt_detail_ZR_Export.php">
+            </div>
+          </div>
+
+          <div class="btn-group" style="margin-top: 1.25rem;">
+            <button type="button" class="btn btn-danger" id="btn-reset">
+              ⏮ Auf Standardwerte zurücksetzen
+            </button>
+          </div>
+        </div>
+      </details>
+    </form>
+
+    <div class="alert alert-info" style="margin-top: 2rem;">
+      <div>
+        <strong>Datenschutzhinweis:</strong> Alle Einstellungen und Rechnungsdaten bleiben ausschliesslich
+        lokal in Ihrem Browser. Es findet keinerlei Übertragung an externe Server statt.
+      </div>
+    </div>
+
+    <footer class="footer">
+      SwissQRRechnung WebExtension &bull; Gemäss SIX Swiss QR Bill Standard &bull; Version 1.0.0
+    </footer>
+  </div>
+
+  <script src="../dist/options.js"></script>
+</body>
+</html>
