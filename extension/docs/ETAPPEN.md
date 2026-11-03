@@ -29,7 +29,7 @@ Abnahme: `npm test` grün; Referenz-CSV wird reproduziert.
 
 ---
 
-## Etappe 2: Datenabruf aus dem Intranet `[ ]`
+## Etappe 2: Datenabruf aus dem Intranet `[~]`
 
 Ziel: Beide Exporte werden per Klick aus der eingeloggten Session geholt.
 

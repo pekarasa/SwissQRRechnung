@@ -36,7 +36,11 @@ dass er ohne Browser-APIs wiederverwendbar ist.
 
 ## 3. Quellsystem (Intranet)
 
-- Start: `https://benutzerId.verua.org/start.php?first=1&id_owner=1`
+- Startseiten: z. B. `https://benutzerId.verua.org/start.php?first=1&id_owner=1` oder `https://benutzerId.verua.org/start_abrechnung.php` (VeruA Version 9.18).
+  Der Hostname variiert je nach Kunde (`https://*.verua.org`).
+- Menüstruktur (Rechnungsverwaltung):
+  Unterpunkte: `Rechnungen erstellen`, `Daten exportieren`, `Rechnungsbeträge`, `Offene Rechnungen`, gefolgt vom Abmelde-Bereich.
+  Zwischen «Offene Rechnungen» und «ABMELDEN» bietet sich Platz für den Erweiterungs-Button «QR-Rechnungen erstellen».
 - Seite ist `charset=iso-8859-1`! Antworten **nie** mit `response.text()` lesen (UTF-8-Annahme),
   sondern `arrayBuffer()` + `TextDecoder('windows-1252')` (bzw. erkannte Kodierung).
 - Axios ist auf der Seite vorhanden (`/data/js/libs/axios.min.js`), wird aber nicht benötigt.
