@@ -198,7 +198,7 @@ extension\
   icons\                   Erweiterungs-Icons (16, 32, 48, 96, 128 px und SVG)
   test\
     fixtures\              Kopien der Dateien aus ..\data (Testdaten)
-    *.test.ts              Vitest (15 Testsuiten, 82 Tests)
+    *.test.ts              Vitest (16 Testsuiten, 87 Tests)
   docs\
 ```
 
@@ -228,3 +228,15 @@ Testfixtures committen, sofern nicht anonymisiert.
 - Für `extension\` wird Node.js (LTS) benötigt. Beim Start von Etappe 1 prüfen: `node -v`, `npm -v`.
 - Git: letzter Commit `1443481 update installation and configuration instructions in README`.
   `data\QR-Rechnungen.pdf` war beim Planungsstart untracked.
+
+## 12. Packaging, Distribution und Deployment (Etappe 5)
+
+- **Artefakt-Erzeugung:** `npm run package` führt den Vite-Build aus und bündelt die Erweiterung mit `web-ext build --config web-ext-config.cjs` nach `web-ext-artifacts/swissqrrechnung-1.0.0.zip`.
+- **Packaging-Filter:** Quellcode (`src/`), Tests (`test/`), Dokumentation (`docs/`), Node-Module (`node_modules/`) und Hilfsskripte werden ausgeschlossen. Das Zip enthält ausschliesslich die produktionsrelevanten Dateien (`manifest.json`, `dist/`, `options/`, `icons/`).
+- **Verteilung:**
+  - AMO unlisted Signing via `web-ext sign` zur Erzeugung einer signierten `.xpi` für reguläre Firefox-Installationen.
+  - Vorkonfigurierte Vorlagen für Unternehmensrichtlinien (`extension/distribution/policies.json`) zur unternehmensweiten Bereitstellung auf Windows und Linux.
+  - Auto-Update-Vorlage (`extension/distribution/updates.json`) für selbstgehostete Updates.
+- **Test in sauberem Profil:** `npm start` startet Firefox mit einem temporären, isolierten Profil und vorinstallierter Erweiterung (`web-ext run`).
+- **Referenz-Codebase:** Die Python-Dateien (`app.py`, `test_app.py`) im Repo-Root bleiben als historische Referenz und Vergleichstestbasis unverändert erhalten.
+

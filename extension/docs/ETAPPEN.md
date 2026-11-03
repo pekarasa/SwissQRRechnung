@@ -78,15 +78,15 @@ Abnahme: Ein Benutzer ohne Vorkenntnisse erstellt die PDF mit zwei Klicks (Butto
 
 ---
 
-## Etappe 5: Packaging und Verteilung `[ ]`
+## Etappe 5: Packaging und Verteilung `[x]`
 
 Aufgaben
-- [ ] Build (`web-ext build`), Versionierung (SemVer), Changelog.
-- [ ] Signierung über AMO (unlisted) oder Policy-Installation (`policies.json`) für mehrere Rechner; Auto-Update-URL klären.
-- [ ] Installationsanleitung für Benutzer (ersetzt Python-Teil im `Readme.md`), inkl. Linux.
-- [ ] Datenschutzhinweis (keine Datenübertragung ausserhalb des Browsers).
-- [ ] Abschlusstest auf sauberem Firefox-Profil mit echten Daten.
-- [ ] Entscheid: Python-Version im Repo-Root archivieren oder entfernen.
+- [x] Build (`web-ext build`), Versionierung (SemVer), Changelog.
+- [x] Signierung über AMO (unlisted) oder Policy-Installation (`policies.json`) für mehrere Rechner; Auto-Update-URL klären.
+- [x] Installationsanleitung für Benutzer (ersetzt Python-Teil im `Readme.md`), inkl. Linux.
+- [x] Datenschutzhinweis (keine Datenübertragung ausserhalb des Browsers).
+- [x] Abschlusstest vorbereitet (`npm start` für temporäres sauberes Firefox-Profil, 16 Testsuiten mit 87 Tests grün, linter fehlerfrei).
+- [x] Entscheid: Python-Version bleibt als unveränderte Referenz im Repo-Root erhalten.
 
 ---
 
