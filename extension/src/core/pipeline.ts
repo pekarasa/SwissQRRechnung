@@ -3,10 +3,11 @@ import { parseInvoices } from './parseInvoices.js';
 import { mergeInvoicesWithClients } from './merge.js';
 import { mapToQrBillRows } from './mapping.js';
 import { generateQrBillCsvBytes, generateQrBillCsvString } from './csv.js';
-import type { CreditorConfig, Invoice, QrBillRow } from './types.js';
+import type { CreditorConfig, Invoice, MergedRecord, QrBillRow } from './types.js';
 
 export interface ProcessResult {
   matchedCount: number;
+  matched: MergedRecord[];
   unmatchedInvoices: Invoice[];
   rows: QrBillRow[];
   csvString: string;
@@ -37,6 +38,7 @@ export function processInvoicesAndClients(
 
   return {
     matchedCount: matched.length,
+    matched,
     unmatchedInvoices,
     rows,
     csvString,

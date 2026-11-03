@@ -3,6 +3,25 @@
   "name": "SwissQRRechnung",
   "version": "1.0.0",
   "description": "Erstellt Schweizer QR-Rechnungen direkt aus dem VeruA-Intranet",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "96": "icons/icon-96.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_title": "SwissQRRechnung - Einstellungen",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png"
+    }
+  },
+  "background": {
+    "scripts": [
+      "dist/background.js"
+    ]
+  },
   "browser_specific_settings": {
     "gecko": {
       "id": "swissqrrechnung@spitex.local",

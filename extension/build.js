@@ -62,4 +62,23 @@ copyFileSync(
   resolve(outDir, 'options.css'),
 );
 
+console.log('[Build] Building background script...');
+await build({
+  configFile: false,
+  build: {
+    outDir: 'dist',
+    emptyOutDir: false,
+    rollupOptions: {
+      input: {
+        background: resolve(import.meta.dirname, 'src/background/index.ts'),
+      },
+      output: {
+        entryFileNames: '[name].js',
+        format: 'iife',
+        name: 'SwissQRBackground',
+      },
+    },
+  },
+});
+
 console.log('[Build] Completed successfully.');
