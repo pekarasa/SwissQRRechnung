@@ -7,6 +7,8 @@
     "doc": "docs"
   },
   "scripts": {
+    "build": "vite build",
+    "lint": "web-ext lint",
     "test": "vitest run",
     "test:watch": "vitest"
   },
