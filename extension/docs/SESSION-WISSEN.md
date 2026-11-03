@@ -166,6 +166,7 @@ Für die Erweiterung ohne Bedeutung, nur für Vergleichstests merken.
 ```
 extension\
   manifest.json
+  vite.config.ts
   src\
     core\            reines TS, ohne Browser-API, vollständig getestet
       types.ts
@@ -176,15 +177,26 @@ extension\
       mapping.ts           -> Zielzeilen (26 Spalten)
       csv.ts               CSV schreiben + cp1252-Kodierung
       encoding.ts          cp1252-Decoder/-Encoder, Erkennung UTF-8/cp1252
+      pipeline.ts          Gesamter Verarbeitungsablauf
     pdf\
-      qrbill.ts            PDF-Erzeugung
-    content\               Button auf start.php, fetch der Exporte
-    background\            Ablaufsteuerung, Status
-    options\               Rechnungssteller, Periode, Parameter
+      validate.ts          Validierung Adressen/IBAN
+      payload.ts           Swiss-QR-Bill-Payload
+      generator.ts         PDF/ZIP-Erzeugung
+    intranet\
+      url.ts               URL-Builder & Perioden-Berechnung (Vormonat, Vorjahr-Rollover)
+      fetcher.ts           Session-Fetch (arrayBuffer), Login-/Fehlererkennung
+      orchestrator.ts      Zusammenspiel Fetch + Stage-1-Pipeline
+    content\
+      index.ts             Navigation-Injection (VeruA v9.18) & Floating Button
+      modal.ts             Dialog Periodenauswahl, Fortschritt, Fehler, CSV-Download
+      storage.ts           Speicherung/Laden Rechnungssteller (browser.storage.local)
+      styles.css           Moderne, barrierefreie Styles für Dialog & Buttons
+    background\            Ablaufsteuerung (später für Optionen/Tabs)
+    options\               Rechnungssteller, Periode, Parameter (Etappe 4)
     result\                Ergebnisseite (Status, PDF, Warnungen)
   test\
     fixtures\              Kopien der Dateien aus ..\data (Testdaten)
-    *.test.ts              Vitest
+    *.test.ts              Vitest (13 Testsuiten, 69 Tests)
   docs\
 ```
 

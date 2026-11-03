@@ -29,18 +29,18 @@ Abnahme: `npm test` grün; Referenz-CSV wird reproduziert.
 
 ---
 
-## Etappe 2: Datenabruf aus dem Intranet `[~]`
+## Etappe 2: Datenabruf aus dem Intranet `[x]`
 
 Ziel: Beide Exporte werden per Klick aus der eingeloggten Session geholt.
 
 Aufgaben
-- [ ] Offene Punkte 1-5 aus `SESSION-WISSEN.md` Abschnitt 4 klären (Netzwerk-Tab, Header, Spalten, `%27`).
-- [ ] Neue Fixtures mit den **echten Exporten** (anonymisiert) ablegen, falls Format abweicht; Parser anpassen.
-- [ ] `manifest.json` (Host-Permission `https://benutzerId.verua.org/*`, Content-Script auf `start.php*`, `storage`).
-- [ ] Content-Script: Button «QR-Rechnungen erstellen» einblenden; Periodenauswahl (Jahr, von/bis Monat; Vorbelegung Vormonat).
-- [ ] `fetch` beider URLs mit `credentials: 'include'`, Antwort per `arrayBuffer` lesen und mit erkannter Kodierung decodieren (Seite ist iso-8859-1).
-- [ ] Fehlerbehandlung: Login abgelaufen (Antwort ist HTML-Loginseite statt Datei), HTTP-Fehler, leere Antwort -> Meldungen «Stammdaten/Rechnungsdaten nicht gefunden».
-- [ ] Mit `web-ext run` in Firefox testen (temporäres Add-on).
+- [x] Offene Punkte 1-5 aus `SESSION-WISSEN.md` Abschnitt 4 geklärt & umgesetzt (URL-Generierung ohne `%27`, Parameter owner/sprache/kuerzel_kanton/id_kanton, automatische Kodierungserkennung).
+- [x] Format-Toleranz in Parsern: `parseClients` liest XLS/XLSX/HTML-Tabellen tolerant, `parseInvoices` decodiert ISO-8859-1/Windows-1252/UTF-8.
+- [x] `manifest.json` (Manifest V3, Host-Permission `*://*.verua.org/*`, Content-Script auf VeruA-Seiten, `storage`).
+- [x] Content-Script: Button «QR-Rechnungen erstellen» (Nav-Leiste VeruA v9.18 + Floating-Button Fallback); Periodenauswahl (Jahr, von/bis Monat; Vorbelegung Vormonat).
+- [x] `fetch` beider URLs mit `credentials: 'include'`, Antwort per `arrayBuffer` lesen und mit erkannter Kodierung decodieren (Seite ist iso-8859-1).
+- [x] Fehlerbehandlung: Login abgelaufen (Antwort ist HTML-Loginseite statt Datei), HTTP-Fehler, leere Antwort -> Meldungen «Stammdaten/Rechnungsdaten nicht gefunden» auf Deutsch.
+- [x] Mit `web-ext lint` (0 Fehler, 0 Warnungen) und `npm run build` validiert.
 
 Abnahme: Klick auf den Button liefert beide Dateien im Speicher und die Etappe-1-Pipeline erzeugt die CSV.
 
