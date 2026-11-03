@@ -51,9 +51,11 @@ dass er ohne Browser-APIs wiederverwendbar ist.
 Die beiden Export-Links (relativ zu `https://benutzerId.verua.org/`):
 
 1. Klientendaten: «Vollständige Klientendaten nach Excel exportieren»
-   `listClientsExportEkarus.php?aktiv=1`
+   `listen/listClientsExportEkarus.php?aktiv=1`
+   (Unterverzeichnis `listen/`!)
 2. Rechnungsdaten: «Daten nach Excel // OpenOffice exportieren»
-   `betraege_gesamt_detail_ZR_Export.php?owner=1&sprache=DE&kuerzel_kanton=O_K&id_kanton=0&v_jahr=2026&v_monat=09&b_monat=10`
+   `Rechnung/betraege_gesamt_detail_ZR_Export.php?owner=1&sprache=DE&kuerzel_kanton=O_K&id_kanton=0&v_jahr=2026&v_monat=09&b_monat=10`
+   (Unterverzeichnis `Rechnung/` mit grossem `R`!)
    - `v_jahr`, `v_monat` (von), `b_monat` (bis) bestimmen die Periode -> Periodenauswahl nötig.
    - Beispieldatei `Alle_Kantone_07-07_2026_<10 Ziffern>.csv` = Periode Juli bis Juli 2026.
 
@@ -252,5 +254,12 @@ Testfixtures committen, sofern nicht anonymisiert.
   Die Untermenüzeile (`start_abrechnung.php`) ist tabellarisch (`tr`/`td`). Direkte Platzierung eines `<button>` in `<tr>`
   wäre invalid. Der Button wird in ein neues `<td>` gepackt und per `targetTd.after(newTd)` exakt rechts neben
   «Offene Rechnungen» (vor «ABMELDEN») eingefügt.
+- **Standard-Schriften im Browser (`registerStdFonts`):**
+  Seit `pdfkit` >= 0.16 werden Standard-Schriften (AFM) im Browser-Build (`pdfkit.browser.mjs`) nicht mehr automatisch
+  geladen. Wenn `swissqrbill` oder `generator.ts` `doc.font('Helvetica')` bzw. `doc.font('Helvetica-Bold')` aufruft,
+  wirft `pdfkit`: `Standard font "Helvetica" is not registered. Call registerStdFonts() before using it.`.
+  Lösung: In `src/pdf/generator.ts` werden die Standard-Schriften (`Helvetica`, `HelveticaBold`, etc.) explizit aus
+  `pdfkit/standard-fonts/*` importiert und über `registerStdFonts` registriert.
+
 
 

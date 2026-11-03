@@ -1,9 +1,44 @@
 import PDFDocument from 'pdfkit';
+import * as pdfkitModule from 'pdfkit';
+// @ts-ignore
+import Helvetica from 'pdfkit/standard-fonts/Helvetica';
+// @ts-ignore
+import HelveticaBold from 'pdfkit/standard-fonts/HelveticaBold';
+// @ts-ignore
+import HelveticaOblique from 'pdfkit/standard-fonts/HelveticaOblique';
+// @ts-ignore
+import HelveticaBoldOblique from 'pdfkit/standard-fonts/HelveticaBoldOblique';
+// @ts-ignore
+import Courier from 'pdfkit/standard-fonts/Courier';
+// @ts-ignore
+import CourierBold from 'pdfkit/standard-fonts/CourierBold';
+// @ts-ignore
+import TimesRoman from 'pdfkit/standard-fonts/TimesRoman';
+// @ts-ignore
+import TimesBold from 'pdfkit/standard-fonts/TimesBold';
 import { SwissQRBill } from 'swissqrbill/pdf';
 import { mm2pt } from 'swissqrbill/utils';
 import JSZip from 'jszip';
 import { validateForPdfGeneration, validateMergedRecord, validateCreditor } from './validate.js';
 import type { CreditorConfig, MergedRecord } from '../core/types.js';
+
+// Register standard fonts for browser environments (pdfkit >= 0.16 requirement)
+const registerFn = (pdfkitModule as Record<string, unknown>).registerStdFonts as
+  | ((...fonts: unknown[]) => void)
+  | undefined;
+
+if (typeof registerFn === 'function') {
+  registerFn(
+    Helvetica,
+    HelveticaBold,
+    HelveticaOblique,
+    HelveticaBoldOblique,
+    Courier,
+    CourierBold,
+    TimesRoman,
+    TimesBold,
+  );
+}
 
 export interface QrBillPdfOptions {
   language?: 'DE' | 'FR' | 'IT' | 'EN';
@@ -18,15 +53,31 @@ export interface QrBillPdfOptions {
  */
 const PAYMENT_PART_Y_PT = mm2pt(297 - 105);
 
+function concatUint8Arrays(chunks: Uint8Array[]): Uint8Array {
+  let totalLength = 0;
+  for (const chunk of chunks) {
+    totalLength += chunk.byteLength;
+  }
+  const result = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const chunk of chunks) {
+    result.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return result;
+}
+
 /**
  * Builds a single PDF stream into a Uint8Array.
  */
 function buildPdfBuffer(doc: PDFKit.PDFDocument): Promise<Uint8Array> {
   return new Promise((resolve, reject) => {
-    const chunks: Buffer[] = [];
-    doc.on('data', (chunk: Buffer) => chunks.push(chunk));
+    const chunks: Uint8Array[] = [];
+    doc.on('data', (chunk: Uint8Array | ArrayBuffer | number[]) => {
+      chunks.push(chunk instanceof Uint8Array ? chunk : new Uint8Array(chunk));
+    });
     doc.on('end', () => {
-      resolve(new Uint8Array(Buffer.concat(chunks)));
+      resolve(concatUint8Arrays(chunks));
     });
     doc.on('error', reject);
     doc.end();
