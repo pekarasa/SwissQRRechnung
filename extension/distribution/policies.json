@@ -1,0 +1,10 @@
+{
+  "policies": {
+    "ExtensionSettings": {
+      "swissqrrechnung@spitex.local": {
+        "installation_mode": "normal_installed",
+        "install_url": "file:///C:/Program%20Files/SwissQRRechnung/swissqrrechnung-1.0.0.xpi"
+      }
+    }
+  }
+}
