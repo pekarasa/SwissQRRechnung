@@ -45,6 +45,13 @@ describe('Extension packaging and manifest validation', () => {
     }
   });
 
+  it('restricts content_scripts matches to start_abrechnung.php in VeruA', () => {
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+    for (const cs of manifest.content_scripts) {
+      expect(cs.matches).toEqual(['*://*.verua.org/start_abrechnung.php*']);
+    }
+  });
+
   it('defines Gecko ID and data collection permissions for AMO / policy install', () => {
     const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
     expect(manifest.browser_specific_settings?.gecko?.id).toBe('swissqrrechnung@spitex.local');

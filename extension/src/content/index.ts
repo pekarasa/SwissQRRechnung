@@ -1,4 +1,5 @@
 import { openQrBillModal } from './modal.js';
+import { isRechnungsverwaltungUrl } from '../intranet/url.js';
 import './styles.css';
 
 function createNavButton(): HTMLButtonElement {
@@ -79,7 +80,7 @@ function injectNavButton(): boolean {
 
 /**
  * Injects a floating action button in the bottom right corner.
- * Ensures the extension is always accessible even on non-standard pages.
+ * Used as fallback on start_abrechnung.php if the navigation bar is not yet ready or cannot be found.
  */
 function injectFloatingButton(): void {
   if (document.getElementById('sqr-fab-trigger')) {
@@ -101,24 +102,40 @@ function injectFloatingButton(): void {
 }
 
 /**
+ * Removes the floating action button if present.
+ */
+function removeFloatingButton(): void {
+  const fab = document.getElementById('sqr-fab-trigger');
+  if (fab) {
+    fab.remove();
+  }
+}
+
+/**
  * Initializes the content script on the page.
+ * Only runs on the "Rechnungsverwaltung" tab (start_abrechnung.php).
  */
 function initContentScript(): void {
+  if (!isRechnungsverwaltungUrl(window.location.href)) {
+    return;
+  }
+
   const injectedInNav = injectNavButton();
   if (!injectedInNav) {
-    // If navigation bar wasn't immediately found, inject FAB and watch DOM for changes
+    // If navigation bar wasn't immediately found, inject FAB as fallback and watch DOM for changes
     injectFloatingButton();
 
     const observer = new MutationObserver(() => {
       if (injectNavButton()) {
+        removeFloatingButton();
         observer.disconnect();
       }
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
   } else {
-    // Also inject FAB for convenience if desired or keep only nav button
-    injectFloatingButton();
+    // Successfully placed in navigation bar; ensure fallback floating button is not shown
+    removeFloatingButton();
   }
 }
 

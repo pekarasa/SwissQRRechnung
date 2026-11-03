@@ -54,7 +54,7 @@ Für die automatische Verteilung über Unternehmensrichtlinien siehe [`docs/VERT
 ## 4. Bedienung im Intranet (VeruA)
 
 1. Im Firefox auf der gewohnten VeruA-Oberfläche anmelden (`https://<kunde>.verua.org`).
-2. Im Abrechnungsbereich erscheint in der Navigationsleiste (neben *Offene Rechnungen*) die rote Schaltfläche **«QR-Rechnungen erstellen»** (zusätzlich steht unten rechts ein Floating-Button bereit).
+2. Im Tab **Rechnungsverwaltung** (`start_abrechnung.php`) erscheint in der Navigationsleiste (neben *Offene Rechnungen*) die rote Schaltfläche **«QR-Rechnungen»** (auf anderen Seiten wird sie nicht angezeigt).
 3. Auf den Button klicken:
    - Es öffnet sich ein Dialog zur Auswahl der Rechnungsperiode (Jahr und Monat von / bis).
    - Die Periode ist standardmässig auf den Vormonat voreingestellt.

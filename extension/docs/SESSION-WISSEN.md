@@ -254,6 +254,9 @@ Testfixtures committen, sofern nicht anonymisiert.
   Die Untermenüzeile (`start_abrechnung.php`) ist tabellarisch (`tr`/`td`). Direkte Platzierung eines `<button>` in `<tr>`
   wäre invalid. Der Button wird in ein neues `<td>` gepackt und per `targetTd.after(newTd)` exakt rechts neben
   «Offene Rechnungen» (vor «ABMELDEN») eingefügt.
+  Die Injektion ist strikt auf den Tab «Rechnungsverwaltung» (`start_abrechnung.php`) beschränkt (sowohl via `matches`
+  im `manifest.json` als auch durch `isRechnungsverwaltungUrl()` im Content-Script). Der Floating-Button dient
+  lediglich als temporärer Fallback und wird ausgeblendet, sobald der Navigations-Button platziert ist.
 - **Standard-Schriften im Browser (`registerStdFonts`):**
   Seit `pdfkit` >= 0.16 werden Standard-Schriften (AFM) im Browser-Build (`pdfkit.browser.mjs`) nicht mehr automatisch
   geladen. Wenn `swissqrbill` oder `generator.ts` `doc.font('Helvetica')` bzw. `doc.font('Helvetica-Bold')` aufruft,

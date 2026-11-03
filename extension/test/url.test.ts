@@ -4,6 +4,7 @@ import {
   buildInvoiceExportUrl,
   formatMonthTwoDigits,
   getDefaultBillingPeriod,
+  isRechnungsverwaltungUrl,
 } from '../src/intranet/url.js';
 
 describe('Intranet URL and Period helpers', () => {
@@ -152,6 +153,24 @@ describe('Intranet URL and Period helpers', () => {
           },
         }),
       ).toThrow('Ungültiges Rechnungsjahr: 1990');
+    });
+  });
+
+  describe('isRechnungsverwaltungUrl', () => {
+    it('returns true for start_abrechnung.php full URLs and paths', () => {
+      expect(isRechnungsverwaltungUrl('https://oetterli.verua.org/start_abrechnung.php')).toBe(true);
+      expect(isRechnungsverwaltungUrl('https://oetterli.verua.org/start_abrechnung.php?owner=1')).toBe(true);
+      expect(isRechnungsverwaltungUrl('http://anyuser.verua.org/start_abrechnung.php#section')).toBe(true);
+      expect(isRechnungsverwaltungUrl('/start_abrechnung.php')).toBe(true);
+      expect(isRechnungsverwaltungUrl('/START_ABRECHNUNG.PHP')).toBe(true);
+    });
+
+    it('returns false for other VeruA pages or empty input', () => {
+      expect(isRechnungsverwaltungUrl('')).toBe(false);
+      expect(isRechnungsverwaltungUrl('https://oetterli.verua.org/start.php')).toBe(false);
+      expect(isRechnungsverwaltungUrl('https://oetterli.verua.org/start_klienten.php')).toBe(false);
+      expect(isRechnungsverwaltungUrl('https://oetterli.verua.org/')).toBe(false);
+      expect(isRechnungsverwaltungUrl('https://oetterli.verua.org/Rechnung/betraege_gesamt_detail_ZR_Export.php')).toBe(false);
     });
   });
 });

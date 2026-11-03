@@ -116,3 +116,20 @@ export function buildInvoiceExportUrl(
   const path = `${basePath}?${query.toString()}`;
   return clean ? `${clean}/${path}` : path;
 }
+
+/**
+ * Checks whether a given URL or pathname corresponds to the VeruA Rechnungsverwaltung page (start_abrechnung.php).
+ */
+export function isRechnungsverwaltungUrl(urlOrPath: string): boolean {
+  if (!urlOrPath) {
+    return false;
+  }
+  try {
+    const parsed = new URL(urlOrPath, 'https://dummy.local');
+    const pathname = parsed.pathname.toLowerCase();
+    return pathname.endsWith('/start_abrechnung.php') || pathname.includes('start_abrechnung.php');
+  } catch {
+    const lower = urlOrPath.toLowerCase();
+    return lower.endsWith('/start_abrechnung.php') || lower.includes('start_abrechnung.php');
+  }
+}

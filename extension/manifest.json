@@ -44,7 +44,7 @@
   "content_scripts": [
     {
       "matches": [
-        "*://*.verua.org/*"
+        "*://*.verua.org/start_abrechnung.php*"
       ],
       "js": [
         "dist/content.js"
