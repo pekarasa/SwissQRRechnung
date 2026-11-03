@@ -178,6 +178,7 @@ extension\
       csv.ts               CSV schreiben + cp1252-Kodierung
       encoding.ts          cp1252-Decoder/-Encoder, Erkennung UTF-8/cp1252
       pipeline.ts          Gesamter Verarbeitungsablauf
+      settings.ts          Konfiguration, Rechnungssteller-Validierung, JSON-Import/Export
     pdf\
       validate.ts          Validierung Adressen/IBAN
       payload.ts           Swiss-QR-Bill-Payload
@@ -188,15 +189,16 @@ extension\
       orchestrator.ts      Zusammenspiel Fetch + Stage-1-Pipeline
     content\
       index.ts             Navigation-Injection (VeruA v9.18) & Floating Button
-      modal.ts             Dialog Periodenauswahl, Fortschritt, Fehler, CSV-Download
+      modal.ts             Dialog Periodenauswahl, PDF/ZIP/CSV-Erstellung & Vorschau/Druck
       storage.ts           Speicherung/Laden Rechnungssteller (browser.storage.local)
       styles.css           Moderne, barrierefreie Styles für Dialog & Buttons
-    background\            Ablaufsteuerung (später für Optionen/Tabs)
-    options\               Rechnungssteller, Periode, Parameter (Etappe 4)
-    result\                Ergebnisseite (Status, PDF, Warnungen)
+    background\
+      index.ts             Ablaufsteuerung & Action-Klick (öffnet Optionsseite)
+    options\               Optionsseite Rechnungssteller & Parameter (HTML/TS/CSS)
+  icons\                   Erweiterungs-Icons (16, 32, 48, 96, 128 px und SVG)
   test\
     fixtures\              Kopien der Dateien aus ..\data (Testdaten)
-    *.test.ts              Vitest (13 Testsuiten, 69 Tests)
+    *.test.ts              Vitest (15 Testsuiten, 82 Tests)
   docs\
 ```
 

@@ -62,17 +62,17 @@ Abnahme: PDF in Referenz und neue PDF sind inhaltlich gleich, QR-Code liest sich
 
 ---
 
-## Etappe 4: Optionen, Ergebnisseite, Bedienung `[ ]`
+## Etappe 4: Optionen, Ergebnisseite, Bedienung `[x]`
 
 Ziel: Fertige, einfache Bedienung ohne Konsole.
 
 Aufgaben
-- [ ] Optionsseite: Rechnungssteller (`IBAN`, Vorname, Nachname, Strasse, Nr., PLZ, Ort) mit Validierung; Speicherung in `storage.local`; Import der bestehenden `Rechnungssteller.json`.
-- [ ] Zusätzlich konfigurierbar: Verwendungszweck (`Klientenanteil Spitex`), Kanton-Parameter, Erweiterte URLs (falls sich das Intranet ändert).
-- [ ] Ergebnisseite: Status (PDF erstellt / Stammdaten fehlen / Rechnungsdaten fehlen / nicht zugeordnete Klienten mit Namen / anderer Fehler), PDF-Vorschau, Download, Drucken, CSV-Download.
-- [ ] Erststart-Hilfe: wenn Rechnungssteller fehlt -> Optionsseite öffnen.
-- [ ] Texte auf Deutsch, verständliche Fehlermeldungen (inkl. Hinweis, wo im Intranet exportiert wird).
-- [ ] Icon, Name, Beschreibung.
+- [x] Optionsseite: Rechnungssteller (`IBAN`, Vorname, Nachname, Strasse, Nr., PLZ, Ort) mit Validierung; Speicherung in `storage.local`; Import der bestehenden `Rechnungssteller.json`.
+- [x] Zusätzlich konfigurierbar: Verwendungszweck (`Klientenanteil Spitex`), Kanton-Parameter, Erweiterte URLs (falls sich das Intranet ändert).
+- [x] Ergebnisseite: Status (PDF erstellt / Stammdaten fehlen / Rechnungsdaten fehlen / nicht zugeordnete Klienten mit Namen / anderer Fehler), PDF-Vorschau, Download, Drucken, CSV-Download, ZIP-Download von Einzel-PDFs.
+- [x] Erststart-Hilfe: wenn Rechnungssteller fehlt oder unvollständig ist -> Hinweis und Button zum Öffnen der Optionsseite.
+- [x] Texte auf Deutsch, verständliche Fehlermeldungen (inkl. Hinweis, wo im Intranet exportiert wird).
+- [x] Icon, Name, Beschreibung (Icons in 16, 32, 48, 96, 128 px und SVG, Action-Toolbar-Button, options_ui).
 
 Abnahme: Ein Benutzer ohne Vorkenntnisse erstellt die PDF mit zwei Klicks (Button, Periode bestätigen).
 
