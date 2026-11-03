@@ -240,3 +240,17 @@ Testfixtures committen, sofern nicht anonymisiert.
 - **Test in sauberem Profil:** `npm start` startet Firefox mit einem temporären, isolierten Profil und vorinstallierter Erweiterung (`web-ext run`).
 - **Referenz-Codebase:** Die Python-Dateien (`app.py`, `test_app.py`) im Repo-Root bleiben als historische Referenz und Vergleichstestbasis unverändert erhalten.
 
+## 13. Firefox-spezifische Erkenntnisse & Fehlerbehebung
+
+- **IIFE-Asset-Inlining (`import.meta.url` in Firefox):**
+  `pdfkit` enthält `new URL('./data/sRGB_IEC61966_2_1.icc', import.meta.url).href`.
+  Vite / Rolldown wandelt dies im `iife`-Format in `new URL('data:...', '' + {}.url).href` um.
+  In Firefox (SpiderMonkey) wirft `new URL(..., 'undefined')` beim Laden des Skripts sofort:
+  `TypeError: URL constructor: undefined is not a valid URL`.
+  Lösung: Im Build-Schritt (`build.js`, `vite.config.ts`) wird dieser Ausdruck zu dem reinen Data-URL-String bereinigt.
+- **Button-Injektion in VeruA:**
+  Die Untermenüzeile (`start_abrechnung.php`) ist tabellarisch (`tr`/`td`). Direkte Platzierung eines `<button>` in `<tr>`
+  wäre invalid. Der Button wird in ein neues `<td>` gepackt und per `targetTd.after(newTd)` exakt rechts neben
+  «Offene Rechnungen» (vor «ABMELDEN») eingefügt.
+
+

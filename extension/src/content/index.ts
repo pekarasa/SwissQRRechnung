@@ -1,44 +1,7 @@
 import { openQrBillModal } from './modal.js';
 import './styles.css';
 
-/**
- * Searches the DOM for navigation elements on VeruA pages (as seen in v9.18).
- */
-function findVeruANavigationBar(): HTMLElement | null {
-  // 1. Try finding links or anchors containing "Offene Rechnungen" or "Daten exportieren"
-  const candidates = Array.from(document.querySelectorAll('a, span, td, div'));
-  for (const el of candidates) {
-    const text = el.textContent?.trim() || '';
-    if (text.includes('Offene Rechnungen') || text.includes('Rechnungsbeträge')) {
-      const parent = el.closest('tr, div, ul, p');
-      if (parent && parent instanceof HTMLElement) {
-        return parent;
-      }
-    }
-  }
-
-  // 2. Fallback: query header or main navigation containers
-  const navContainer = document.querySelector('.navigation, #navigation, .menu, #menu, .header, #header');
-  if (navContainer && navContainer instanceof HTMLElement) {
-    return navContainer;
-  }
-
-  return null;
-}
-
-/**
- * Injects the trigger button into the VeruA navigation bar if available.
- */
-function injectNavButton(): boolean {
-  if (document.getElementById('sqr-nav-trigger')) {
-    return true; // Already injected
-  }
-
-  const nav = findVeruANavigationBar();
-  if (!nav) {
-    return false;
-  }
-
+function createNavButton(): HTMLButtonElement {
   const btn = document.createElement('button');
   btn.id = 'sqr-nav-trigger';
   btn.type = 'button';
@@ -49,9 +12,69 @@ function injectNavButton(): boolean {
     e.preventDefault();
     openQrBillModal();
   });
+  return btn;
+}
 
-  nav.appendChild(btn);
-  return true;
+/**
+ * Injects the trigger button into the VeruA navigation bar next to "Offene Rechnungen".
+ */
+function injectNavButton(): boolean {
+  if (document.getElementById('sqr-nav-trigger')) {
+    return true; // Already injected
+  }
+
+  // Target navigation items in order of preference
+  const targetLabels = ['Offene Rechnungen', 'Rechnungsbeträge', 'Daten exportieren'];
+
+  // 1. Look for a specific menu item link or cell containing the label
+  const candidates = Array.from(document.querySelectorAll('a, button, td, th, li, span, div'));
+  for (const label of targetLabels) {
+    for (const el of candidates) {
+      const text = el.textContent?.trim() || '';
+      // We only want navigation items with relatively short text, not entire card descriptions
+      if (text.includes(label) && text.length < 60) {
+        const btn = createNavButton();
+
+        // If inside a table cell (typical in VeruA navigation bars)
+        const td = el.closest('td, th');
+        if (td && td instanceof HTMLElement) {
+          const newTd = document.createElement(td.tagName.toLowerCase()) as HTMLTableCellElement;
+          newTd.id = 'sqr-nav-cell';
+          newTd.style.verticalAlign = 'middle';
+          newTd.appendChild(btn);
+          td.after(newTd);
+          return true;
+        }
+
+        // If inside a list item
+        const li = el.closest('li');
+        if (li && li instanceof HTMLElement) {
+          const newLi = document.createElement('li');
+          newLi.id = 'sqr-nav-cell';
+          newLi.appendChild(btn);
+          li.after(newLi);
+          return true;
+        }
+
+        // If it's an anchor or inline element inside a container
+        const anchor = el.closest('a') || el;
+        if (anchor && anchor instanceof HTMLElement && anchor.parentElement) {
+          anchor.after(btn);
+          return true;
+        }
+      }
+    }
+  }
+
+  // 2. Fallback: query header or main navigation containers
+  const navContainer = document.querySelector('.navigation, #navigation, .menu, #menu, .header, #header');
+  if (navContainer && navContainer instanceof HTMLElement) {
+    const btn = createNavButton();
+    navContainer.appendChild(btn);
+    return true;
+  }
+
+  return false;
 }
 
 /**
