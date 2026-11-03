@@ -7,3 +7,4 @@ export * from './merge.js';
 export * from './mapping.js';
 export * from './csv.js';
 export * from './pipeline.js';
+export * from './settings.js';
