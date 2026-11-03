@@ -9,6 +9,7 @@
   "scripts": {
     "build": "node build.js",
     "lint": "web-ext lint",
+    "package": "node build.js && web-ext build --config web-ext-config.cjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },
