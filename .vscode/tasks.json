@@ -4,41 +4,49 @@
         {
             "label": "setup",
             "type": "shell",
-            "command": "pip install pandas watchdog requests odfpy xlrd",
+            "command": "npm install",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
                 "isDefault": false
             },
-            "detail": "Installiert Abhängigkeiten wie in Readme.md beschrieben (Container)"
+            "detail": "Installiert die Abhängigkeiten (Container)"
         },
         {
-            "label": "start",
+            "label": "build",
             "type": "shell",
-            "command": "python app.py",
+            "command": "npm run build",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "detail": "Startet die Applikation (Container)"
+            "detail": "Kompiliert die Erweiterung nach dist/"
         },
         {
             "label": "test",
             "type": "shell",
-            "command": "python -m unittest test_app.py",
+            "command": "npm test",
+            "problemMatcher": [],
             "group": {
                 "kind": "test",
                 "isDefault": true
             },
-            "detail": "Startet die Unittests (Container)"
+            "detail": "Startet die Unit-Tests (Vitest)"
         },
         {
-            "label": "publish",
+            "label": "lint",
             "type": "shell",
-            "command": "mkdir -p publish && zip -r publish/SwissQRRechnung.zip app.py config Readme.md",
+            "command": "npm run lint",
             "problemMatcher": [],
-            "detail": "Packt alle relevanten Dateien in eine Zip-Datei im publish-Ordner"
+            "detail": "Prüft das Paket mit web-ext lint"
+        },
+        {
+            "label": "package",
+            "type": "shell",
+            "command": "npm run package",
+            "problemMatcher": [],
+            "detail": "Erzeugt das ZIP-Paket in web-ext-artifacts/"
         }
     ]
 }

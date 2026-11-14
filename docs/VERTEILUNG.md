@@ -33,7 +33,7 @@ Mozilla erlaubt das kostenlose Signieren eigener Erweiterungen für den Eigenbet
 2. Unter *Tools > API-Schlüssel* einen API-Key (`JWT Issuer`) und ein API-Secret (`JWT Secret`) erzeugen.
 
 ### Signierung per Befehl
-Im Ordner `extension`:
+Im Projektverzeichnis (Repository-Root):
 ```bash
 npm run package
 npx web-ext sign --api-key="<DEIN_JWT_ISSUER>" --api-secret="<DEIN_JWT_SECRET>" --channel=unlisted
@@ -57,7 +57,7 @@ Wenn neue Versionen automatisch bezogen werden sollen:
      }
    }
    ```
-2. Auf dem internen Webserver die Datei `updates.json` bereitstellen (Vorlage in `extension/distribution/updates.json`):
+2. Auf dem internen Webserver die Datei `updates.json` bereitstellen (Vorlage in `distribution/updates.json`):
    ```json
    {
      "addons": {
@@ -81,7 +81,7 @@ Wenn neue Versionen automatisch bezogen werden sollen:
 Für Umgebungen mit mehreren Rechnern kann Firefox über die Enterprise Policies vorkonfiguriert werden.
 
 ### Konfigurationsdatei `distribution/policies.json`
-Eine Vorlage befindet sich in `extension/distribution/policies.json`:
+Eine Vorlage befindet sich in `distribution/policies.json`:
 ```json
 {
   "policies": {
@@ -117,5 +117,5 @@ Beim nächsten Start von Firefox wird die Erweiterung automatisch installiert un
 Für schnelle Vorabtests auf einem sauberen Firefox-Profil:
 1. Firefox öffnen und `about:debugging#/runtime/this-firefox` in die Adresszeile eingeben.
 2. Auf **«Temporäres Add-on laden...»** klicken.
-3. Zur Datei `extension/manifest.json` navigieren und öffnen.
+3. Zur Datei `manifest.json` im Projektverzeichnis navigieren und öffnen.
 4. Die Erweiterung ist sofort aktiv (inkl. Optionen unter `about:addons` oder Toolbar-Icon).

@@ -3,6 +3,10 @@
 Hintergrund, Entscheide, Datenformate und Mapping: siehe `SESSION-WISSEN.md`.
 Jede Etappe ist einzeln lieferbar und testbar. Status pflegen: `[ ]` offen, `[~]` in Arbeit, `[x]` erledigt.
 
+> **Hinweis (14.11.2026):** Die Python-Version wurde entfernt. Die Pfade `extension\` und `..\data` in den
+> Etappen 1 bis 5 beziehen sich auf den damaligen Stand: heute liegt das Projekt im Repository-Root, die
+> Testdaten in `test/fixtures/`.
+
 Reihenfolge ist empfohlen; Etappe 1 und 3 sind unabhängig vom Quellsystem und können ohne Intranetzugang
 erledigt werden.
 

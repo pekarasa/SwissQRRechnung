@@ -3,6 +3,17 @@
 Alle relevanten Änderungen an der Firefox-Erweiterung **SwissQRRechnung** werden in dieser Datei dokumentiert.
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [Unveröffentlicht]
+
+### Geändert
+- Repository auf die Firefox-Erweiterung reduziert: Der Inhalt von `extension/` liegt jetzt im Repository-Root.
+- Die Python-Konsolenanwendung (`app.py`, `test_app.py`, `config/`, `data/`) wurde entfernt; sie bleibt in der Git-Historie erhalten.
+- Verteilungsvorlagen (`distribution/`) sind nicht mehr Teil des Erweiterungspakets.
+- Entwicklungsumgebung (Devcontainer, VS-Code-Tasks) auf Node.js und npm umgestellt.
+
+### Behoben
+- Installation der Abhängigkeiten auf Linux: Das Windows-spezifische Paket `@rolldown/binding-win32-x64-msvc` wurde als direkte Abhängigkeit entfernt.
+
 ## [1.0.1] - 2026-11-14
 
 ### Behoben
