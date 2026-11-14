@@ -1,6 +1,6 @@
 {
   "name": "extension",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Neuentwicklung des Python-Programms im Repo-Root als Firefox-Erweiterung: Stamm- und Rechnungsdaten werden direkt aus dem Intranet (`benutzerId.verua.org`) geholt, zusammengeführt und als Swiss-QR-Rechnung-PDF lokal erzeugt.",
   "main": "index.js",
   "directories": {

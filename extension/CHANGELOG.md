@@ -3,6 +3,15 @@
 Alle relevanten Änderungen an der Firefox-Erweiterung **SwissQRRechnung** werden in dieser Datei dokumentiert.
 Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) und folgt [Semantic Versioning](https://semver.org/lang/de/).
 
+## [1.0.1] - 2026-11-14
+
+### Behoben
+- Content-Script: Fehler im URL-Konstruktor behoben und Navigations-Button sauber eingefügt (rechts neben «Offene Rechnungen»).
+- Export-Endpunkte für Klienten- und Rechnungsdaten auf die echten Unterverzeichnisse des Servers angepasst.
+- Browser-PDF-Erzeugung: Standard-Schriften werden registriert, `Buffer` wird nicht mehr verwendet.
+- Drucken des PDFs in Firefox: Einschränkungen durch Cross-Origin-Richtlinien werden abgefangen.
+- Button «QR-Rechnungen erstellen» wird nur noch im Tab «Rechnungsverwaltung» eingefügt.
+
 ## [1.0.0] - 2026-11-03
 
 ### Hinzugefügt
