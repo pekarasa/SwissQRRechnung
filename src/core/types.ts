@@ -24,6 +24,17 @@ export interface Invoice {
   year?: string;
 }
 
+export interface Municipality {
+  name: string;
+  addition: string;
+  streetAndNumber: string;
+  street: string;
+  buildingNumber: string;
+  postBox: string;
+  zipCode: string;
+  city: string;
+}
+
 export interface CreditorConfig {
   iban: string;
   firstName: string;

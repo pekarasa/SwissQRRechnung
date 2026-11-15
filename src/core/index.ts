@@ -3,6 +3,7 @@ export * from './encoding.js';
 export * from './address.js';
 export * from './parseInvoices.js';
 export * from './parseClients.js';
+export * from './parseMunicipalities.js';
 export * from './merge.js';
 export * from './mapping.js';
 export * from './csv.js';
