@@ -129,6 +129,7 @@ label {
 
 input[type="text"],
 input[type="number"],
+textarea,
 select {
   padding: 0.5rem 0.75rem;
   border: 1px solid #d1d5db;
@@ -141,6 +142,7 @@ select {
 }
 
 input:focus,
+textarea:focus,
 select:focus {
   outline: none;
   border-color: var(--primary-color);
@@ -154,6 +156,16 @@ input.is-invalid {
 
 input.is-invalid:focus {
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+}
+
+textarea {
+  font-family: inherit;
+  resize: vertical;
+}
+
+.field-hint {
+  font-size: 0.775rem;
+  color: var(--text-muted);
 }
 
 .field-error {

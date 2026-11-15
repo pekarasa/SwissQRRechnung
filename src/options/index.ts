@@ -3,6 +3,8 @@ import {
   DEFAULT_CREDITOR,
   exportCreditorToJson,
   importCreditorFromJson,
+  normalizeMunicipalitySelection,
+  sanitizeMunicipalityBilling,
   validateCreditorFields,
   type AppSettings,
 } from '../core/settings.js';
@@ -53,7 +55,7 @@ function setFieldError(fieldId: string, errorText: string): void {
 }
 
 function populateForm(settings: AppSettings): void {
-  const { creditor, unstructuredMessage, exportParams, customUrls } = settings;
+  const { creditor, unstructuredMessage, exportParams, customUrls, municipalityBilling } = settings;
 
   getElement<HTMLInputElement>('iban').value = creditor.iban || '';
   getElement<HTMLInputElement>('firstName').value = creditor.firstName || '';
@@ -71,6 +73,10 @@ function populateForm(settings: AppSettings): void {
 
   getElement<HTMLInputElement>('clientsPath').value = customUrls.clientsPath || '';
   getElement<HTMLInputElement>('invoicesPath').value = customUrls.invoicesPath || '';
+  getElement<HTMLInputElement>('municipalitiesPath').value = customUrls.municipalitiesPath || '';
+
+  getElement<HTMLTextAreaElement>('municipalitiesSelected').value = municipalityBilling.selected.join('\n');
+  getElement<HTMLInputElement>('municipalityMessageTemplate').value = municipalityBilling.messageTemplate || '';
 }
 
 function readFormCreditor(): CreditorConfig {
@@ -85,8 +91,6 @@ function readFormCreditor(): CreditorConfig {
   };
 }
 
-let loadedSettings: AppSettings = DEFAULT_APP_SETTINGS;
-
 function readFormSettings(): AppSettings {
   const creditor = readFormCreditor();
   const unstructuredMessage = getElement<HTMLInputElement>('unstructuredMessage').value.trim() || 'Klientenanteil Spitex';
@@ -96,6 +100,14 @@ function readFormSettings(): AppSettings {
   const sprache = getElement<HTMLInputElement>('sprache').value.trim() || 'DE';
   const clientsPath = getElement<HTMLInputElement>('clientsPath').value.trim() || DEFAULT_APP_SETTINGS.customUrls.clientsPath;
   const invoicesPath = getElement<HTMLInputElement>('invoicesPath').value.trim() || DEFAULT_APP_SETTINGS.customUrls.invoicesPath;
+  const municipalitiesPath =
+    getElement<HTMLInputElement>('municipalitiesPath').value.trim() || DEFAULT_APP_SETTINGS.customUrls.municipalitiesPath;
+  const municipalityBilling = sanitizeMunicipalityBilling({
+    selected: normalizeMunicipalitySelection(
+      getElement<HTMLTextAreaElement>('municipalitiesSelected').value.split(/\r?\n/),
+    ),
+    messageTemplate: getElement<HTMLInputElement>('municipalityMessageTemplate').value,
+  });
 
   return {
     creditor,
@@ -109,9 +121,9 @@ function readFormSettings(): AppSettings {
     customUrls: {
       clientsPath,
       invoicesPath,
-      municipalitiesPath: loadedSettings.customUrls.municipalitiesPath,
+      municipalitiesPath,
     },
-    municipalityBilling: loadedSettings.municipalityBilling,
+    municipalityBilling,
   };
 }
 
@@ -129,7 +141,6 @@ function downloadFile(content: string, filename: string, mimeType: string): void
 
 async function initOptionsPage(): Promise<void> {
   const settings = await loadAppSettings();
-  loadedSettings = settings;
   populateForm(settings);
 
   const form = getElement<HTMLFormElement>('options-form');
