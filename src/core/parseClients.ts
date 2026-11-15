@@ -24,6 +24,20 @@ function formatIntegerString(val: unknown): string {
 }
 
 /**
+ * Normalizes a municipality name: trims, collapses whitespace and maps placeholders like " - " to ''.
+ */
+export function normalizeMunicipalityName(val: unknown): string {
+  if (val === null || val === undefined) {
+    return '';
+  }
+  const name = String(val).replace(/\s+/g, ' ').trim();
+  if (/^-*$/.test(name)) {
+    return '';
+  }
+  return name;
+}
+
+/**
  * Parses client master data from an Excel workbook (.xls or .xlsx).
  * Tolerant of corrupted workbook structures, ignores non-clients without names/salutations,
  * and formats postal codes as integer strings.
@@ -74,6 +88,8 @@ export function parseClients(input: Uint8Array | ArrayBuffer): Client[] {
     const zipCode = formatIntegerString(row['PLZ']);
     const city = String(row['Ort'] ?? '').trim();
     const matchName = buildClientMatchName(lastName, salutation, firstName);
+    const municipalityName = normalizeMunicipalityName(row['Kostenträger Gemeinde']);
+    const municipalityId = formatIntegerString(row['ID Gemeinde']);
 
     clients.push({
       clientNumber,
@@ -86,6 +102,8 @@ export function parseClients(input: Uint8Array | ArrayBuffer): Client[] {
       zipCode,
       city,
       matchName,
+      municipalityName,
+      municipalityId,
     });
   }
 

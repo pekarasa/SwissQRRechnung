@@ -15,11 +15,22 @@ function unquote(value: string): string {
   return trimmed;
 }
 
+/** Column index of the municipality share "Gemeinde KLV". */
+export const MUNICIPALITY_KLV_COLUMN = 14;
+
+/**
+ * Removes quotes and Swiss thousands separators from an amount cell.
+ */
+function cleanAmount(value: string): string {
+  return unquote(value).replace(/['’´]/g, '').trim();
+}
+
 /**
  * Parses tab-separated invoice CSV data according to the Python reference:
  * - Skips first 4 header lines
  * - Reads column 0 (Client name in "Nachname, Anrede Vorname" format)
  * - Reads column 8 (Amount "Klient KLV")
+ * - Reads column 14 (Amount "Gemeinde KLV", 0 if missing) and columns 1/2 (month/year)
  * - Ignores empty rows and rows starting with "Gesamt"
  * - Cleans thousands separator (single quote) and parses numeric amount
  */
@@ -53,7 +64,7 @@ export function parseInvoices(input: string | Uint8Array): Invoice[] {
       continue;
     }
 
-    const amountStr = unquote(col8).replace(/['’´]/g, '').trim();
+    const amountStr = cleanAmount(col8);
     if (!amountStr) {
       continue;
     }
@@ -63,10 +74,22 @@ export function parseInvoices(input: string | Uint8Array): Invoice[] {
       throw new Error(`Ungültiger Betrag "${unquote(col8)}" für Klient "${matchName}" in Zeile ${i + 5}`);
     }
 
+    const col14 = columns[MUNICIPALITY_KLV_COLUMN];
+    const municipalityAmountStr = col14 === undefined ? '' : cleanAmount(col14);
+    const municipalityAmount = municipalityAmountStr ? Number(municipalityAmountStr) : 0;
+    if (Number.isNaN(municipalityAmount) || !Number.isFinite(municipalityAmount)) {
+      throw new Error(
+        `Ungültiger Gemeindebetrag "${unquote(col14 ?? '')}" für Klient "${matchName}" in Zeile ${i + 5}`,
+      );
+    }
+
     invoices.push({
       matchName,
       amount,
       amountFormatted: amount.toFixed(2),
+      municipalityAmount,
+      month: unquote(columns[1] ?? ''),
+      year: unquote(columns[2] ?? ''),
     });
   }
 

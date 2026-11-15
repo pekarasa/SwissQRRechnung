@@ -9,12 +9,19 @@ export interface Client {
   zipCode: string;
   city: string;
   matchName: string;
+  /** Name of the paying municipality ("Kostenträger Gemeinde"), empty if none. */
+  municipalityName?: string;
+  municipalityId?: string;
 }
 
 export interface Invoice {
   matchName: string;
   amount: number;
   amountFormatted: string;
+  /** Municipality share KLV (residual financing, column 14). */
+  municipalityAmount?: number;
+  month?: string;
+  year?: string;
 }
 
 export interface CreditorConfig {

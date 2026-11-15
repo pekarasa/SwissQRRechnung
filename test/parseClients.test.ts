@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { parseClients, buildClientMatchName } from '../src/core/parseClients.js';
+import { parseClients, buildClientMatchName, normalizeMunicipalityName } from '../src/core/parseClients.js';
 
 describe('parseClients', () => {
   it('parses client master data from fixture file', () => {
@@ -29,6 +29,8 @@ describe('parseClients', () => {
       zipCode: '4450',
       city: 'Sissach',
       matchName: 'Meier, Frau Sandra',
+      municipalityName: 'Gemeinde Sissach',
+      municipalityId: '491',
     });
 
     const steiner = clients.find((c) => c.clientNumber === '182');
@@ -44,6 +46,8 @@ describe('parseClients', () => {
       zipCode: '4450',
       city: 'Sissach',
       matchName: 'Steiner, Herr Walter',
+      municipalityName: 'Gemeinde Sissach',
+      municipalityId: '491',
     });
 
     const knuesel = clients.find((c) => c.clientNumber === '184');
@@ -52,6 +56,8 @@ describe('parseClients', () => {
     expect(knuesel?.street).toBe('Hauptstrasse');
     expect(knuesel?.buildingNumber).toBe('57');
     expect(knuesel?.zipCode).toBe('4460');
+    expect(knuesel?.municipalityName).toBe('Gemeinde Gelterkinden');
+    expect(knuesel?.municipalityId).toBe('493');
 
     const wagner = clients.find((c) => c.clientNumber === '183');
     expect(wagner).toBeDefined();
@@ -65,6 +71,13 @@ describe('parseClients', () => {
     expect(buildClientMatchName('Meier', 'Frau', 'Sandra')).toBe('Meier, Frau Sandra');
     expect(buildClientMatchName('Muster', '', 'Hans')).toBe('Muster, Hans');
     expect(buildClientMatchName('Solo', '', '')).toBe('Solo');
+  });
+
+  it('normalizes municipality names and placeholders', () => {
+    expect(normalizeMunicipalityName(' Gemeinde   Sissach ')).toBe('Gemeinde Sissach');
+    expect(normalizeMunicipalityName(' - ')).toBe('');
+    expect(normalizeMunicipalityName('')).toBe('');
+    expect(normalizeMunicipalityName(undefined)).toBe('');
   });
 
   it('returns empty array for empty buffer', () => {
