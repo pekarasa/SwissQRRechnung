@@ -5,12 +5,6 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) 
 
 ## [Unveröffentlicht]
 
-### Geändert
-- Dialog: Link «Bearbeiten» beim Rechnungssteller entfernt; die Einstellungen werden über «⚙️ Einstellungen» geöffnet.
-
-### Behoben
-- Knöpfe im Dialog, die die Einstellungen öffnen sollen, reagierten nicht (Firefox blockiert das direkte Öffnen aus der Webseite; jetzt via Background-Script).
-
 ## [1.1.0] - 2026-11-15
 
 ### Hinzugefügt
@@ -27,9 +21,11 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) 
 - Die Python-Konsolenanwendung (`app.py`, `test_app.py`, `config/`, `data/`) wurde entfernt; sie bleibt in der Git-Historie erhalten.
 - Verteilungsvorlagen (`distribution/`) sind nicht mehr Teil des Erweiterungspakets.
 - Entwicklungsumgebung (Devcontainer, VS-Code-Tasks) auf Node.js und npm umgestellt.
+- Dialog: Link «Bearbeiten» beim Rechnungssteller entfernt; die Einstellungen werden über «⚙️ Einstellungen» geöffnet.
 
 ### Behoben
 - Installation der Abhängigkeiten auf Linux: Das Windows-spezifische Paket `@rolldown/binding-win32-x64-msvc` wurde als direkte Abhängigkeit entfernt.
+- Knöpfe im Dialog, die die Einstellungen öffnen sollen, reagierten nicht (Firefox blockiert das direkte Öffnen aus der Webseite; jetzt via Background-Script).
 
 ## [1.0.1] - 2026-11-14
 
