@@ -94,25 +94,26 @@ Aufgaben
 
 ---
 
-## Etappe 6: Einzahlungsscheine für Gemeinden (Restfinanzierung) `[ ]`
+## Etappe 6: Einzahlungsscheine für Gemeinden (Restfinanzierung) `[~]`
 
 Ziel: Für konfigurierbare Gemeinden wird pro Klient ein QR-Einzahlungsschein über den Gemeindeanteil
 (Restfinanzierung, «Gemeinde KLV») erstellt; «Zahlbar durch» ist die Gemeinde. Entscheide und Datenformate:
 `SESSION-WISSEN.md` Abschnitt 14.
 
 Aufgaben
-- [ ] Doku: Entscheide, Datenformat Gemeindeliste, Etappenplan; Fixture `Liste-aller-Gemeinden-mit-aktiven-Klienten_15-11-2026.xlsx`.
-- [ ] `parseInvoices.ts`: zusätzlich Spalte 14 (Gemeinde KLV), Monat (1) und Jahr (2) lesen. Referenz-CSV bleibt bytegenau.
-- [ ] `parseClients.ts`: zusätzlich `Kostenträger Gemeinde` und `ID Gemeinde` lesen (` - ` = keine Gemeinde).
-- [ ] `parseMunicipalities.ts`: Gemeindeliste (XLSX, Kopfzeile «Name») -> `Municipality[]` mit Adresse (Strasse/Nr. getrennt, Postfach als Ersatz, Zusatz).
-- [ ] `municipality.ts`: Gemeinderechnungen bilden (Filter auf gewählte Gemeinden, Betrag > 0, Adresse über Namen), Warnungen (Gemeinde nicht in Liste, Betrag 0); Mapping auf die 27 CSV-Spalten.
-- [ ] Einstellungen: gewählte Gemeinden, Verwendungszweck-Vorlage, Pfad der Gemeindeliste; Migration bestehender Einstellungen.
-- [ ] Intranet: URL-Builder und Abruf `listen/export_listen_gemeinden_xls.php?id_owner=1&sprache=DE&aktiv=&spitex=0`.
-- [ ] Orchestrator: Gemeinde-Pipeline (drei Exporte parallel laden).
-- [ ] PDF: Generator auf allgemeine Zahlteil-Daten umstellen; Gemeinde-PDF und ZIP (`{Gemeinde}_{Nachname}_{Vorname}.pdf`).
-- [ ] Dialog: Auswahl «Klientenrechnungen / Gemeinderechnungen», Gemeinde-Auswahl (Checkboxen aus der Gemeindeliste, gespeichert), Ergebnisanzeige mit Warnungen.
-- [ ] Optionsseite: gewählte Gemeinden und Verwendungszweck-Vorlage bearbeiten.
-- [ ] Abschluss: Version 1.1.0, Changelog, README, `npm test`, `npm run build`, `web-ext lint`.
+- [x] Doku: Entscheide, Datenformat Gemeindeliste, Etappenplan; Fixture `Liste-aller-Gemeinden-mit-aktiven-Klienten_15-11-2026.xlsx`.
+- [x] `parseInvoices.ts`: zusätzlich Spalte 14 (Gemeinde KLV), Monat (1) und Jahr (2) lesen. Referenz-CSV bleibt bytegenau.
+- [x] `parseClients.ts`: zusätzlich `Kostenträger Gemeinde` und `ID Gemeinde` lesen (` - ` = keine Gemeinde).
+- [x] `parseMunicipalities.ts`: Gemeindeliste (XLSX, Kopfzeile «Name») -> `Municipality[]` mit Adresse (Strasse/Nr. getrennt, Postfach als Ersatz, Zusatz).
+- [x] `municipality.ts`: Gemeinderechnungen bilden (Filter auf gewählte Gemeinden, Betrag > 0, Adresse über Namen), Warnungen (Gemeinde nicht in Liste, Betrag 0); Mapping auf die 27 CSV-Spalten.
+- [x] Einstellungen: gewählte Gemeinden, Verwendungszweck-Vorlage, Pfad der Gemeindeliste; Migration bestehender Einstellungen.
+- [x] Intranet: URL-Builder und Abruf `listen/export_listen_gemeinden_xls.php?id_owner=1&sprache=DE&aktiv=&spitex=0`.
+- [x] Orchestrator: Gemeinde-Pipeline (drei Exporte parallel laden).
+- [x] PDF: Generator auf allgemeine Zahlteil-Daten umstellen; Gemeinde-PDF und ZIP (`{Gemeinde}_{Nachname}_{Vorname}.pdf`).
+- [x] Dialog: Auswahl «Klientenrechnungen / Gemeinderechnungen», Gemeinde-Auswahl (Checkboxen aus der Gemeindeliste, gespeichert), Ergebnisanzeige mit Warnungen.
+- [x] Optionsseite: gewählte Gemeinden und Verwendungszweck-Vorlage bearbeiten.
+- [x] Abschluss: Version 1.1.0, Changelog, README, `npm test`, `npm run build`, `web-ext lint`.
+- [ ] Praxistest im echten VeruA: Abruf der Gemeindeliste, Gemeinde-Auswahl, Druck; Ergebnis in `SESSION-WISSEN.md` Abschnitt 14 nachtragen.
 
 Abnahme: Mit den Fixtures und gewählten Gemeinden «Gemeinde Sissach» und «Gemeinde Gelterkinden» entstehen
 4 Einzahlungsscheine (Meier 126.55, Steiner 33.55, Knüsel 90.50, Wagner 157.70), «Zahlbar durch» ist die

@@ -68,6 +68,18 @@ Die Erweiterung kann unter Linux (`/etc/firefox/policies/policies.json`) sowie W
    - **ZIP-Download** mit Einzel-PDFs pro Klient
    - **CSV-Download** (`QR-Rechnungen.csv`) zur Nachkontrolle
 
+### Gemeinde-Einzahlungsscheine (Restfinanzierung)
+
+1. Im Dialog unter **«Art der Rechnungen»** die Option **«Gemeinde-Einzahlungsscheine (Restfinanzierung)»** wählen.
+2. Die Gemeindeliste wird aus VeruA geladen (`listen/export_listen_gemeinden_xls.php`). Die gewünschten Gemeinden ankreuzen; die Auswahl wird gespeichert.
+3. Auf **«Gemeinde-Einzahlungsscheine erstellen»** klicken:
+   - Für jeden Klienten einer gewählten Gemeinde entsteht ein Einzahlungsschein über den Gemeindeanteil (Spalte «Gemeinde KLV»).
+   - «Zahlbar durch» ist die Gemeinde mit Adresse aus der VeruA-Gemeindeliste, «Zahlbar an» der Rechnungssteller.
+   - Klienten mit Gemeindeanteil 0.00 oder Gemeinden ohne Eintrag in der Gemeindeliste werden als Hinweis gemeldet.
+4. Ergebnis wie oben: Sammel-PDF `Gemeinde-Einzahlungsscheine.pdf`, ZIP mit Einzel-PDFs (`{Gemeinde}_{Nachname}_{Vorname}.pdf`), CSV.
+
+Die gewählten Gemeinden und der Text «Zusätzliche Informationen» (Platzhalter `{Vorname}`, `{Nachname}`, `{Nummer}`, `{Monat}`, `{Jahr}`, `{Gemeinde}`) lassen sich auch auf der Optionsseite bearbeiten.
+
 ---
 
 ## 5. Datenschutz und Sicherheit
