@@ -1,3 +1,7 @@
+import { OPEN_OPTIONS_MESSAGE } from '../core/messages.js';
+
+type MessageListener = (message: unknown) => void;
+
 declare const browser: {
   action?: {
     onClicked?: {
@@ -6,6 +10,9 @@ declare const browser: {
   };
   runtime?: {
     openOptionsPage?: () => Promise<void>;
+    onMessage?: {
+      addListener: (cb: MessageListener) => void;
+    };
   };
 } | undefined;
 
@@ -17,16 +24,38 @@ declare const chrome: {
   };
   runtime?: {
     openOptionsPage?: (cb?: () => void) => void;
+    onMessage?: {
+      addListener: (cb: MessageListener) => void;
+    };
   };
 } | undefined;
 
-// When the user clicks the toolbar icon, open the options page
-if (typeof browser !== 'undefined' && browser.action?.onClicked) {
-  browser.action.onClicked.addListener(() => {
+function isOpenOptionsMessage(message: unknown): boolean {
+  return (
+    typeof message === 'object' &&
+    message !== null &&
+    (message as { type?: unknown }).type === OPEN_OPTIONS_MESSAGE
+  );
+}
+
+// Toolbar icon click and requests from the content script open the options page
+// (runtime.openOptionsPage is not available in content scripts).
+if (typeof browser !== 'undefined' && browser.runtime) {
+  browser.action?.onClicked?.addListener(() => {
     browser.runtime?.openOptionsPage?.();
   });
-} else if (typeof chrome !== 'undefined' && chrome.action?.onClicked) {
-  chrome.action.onClicked.addListener(() => {
+  browser.runtime.onMessage?.addListener((message) => {
+    if (isOpenOptionsMessage(message)) {
+      browser.runtime?.openOptionsPage?.();
+    }
+  });
+} else if (typeof chrome !== 'undefined' && chrome.runtime) {
+  chrome.action?.onClicked?.addListener(() => {
     chrome.runtime?.openOptionsPage?.();
+  });
+  chrome.runtime.onMessage?.addListener((message) => {
+    if (isOpenOptionsMessage(message)) {
+      chrome.runtime?.openOptionsPage?.();
+    }
   });
 }

@@ -267,6 +267,11 @@ Testfixtures committen, sofern nicht anonymisiert.
   wirft `pdfkit`: `Standard font "Helvetica" is not registered. Call registerStdFonts() before using it.`.
   Lösung: In `src/pdf/generator.ts` werden die Standard-Schriften (`Helvetica`, `HelveticaBold`, etc.) explizit aus
   `pdfkit/standard-fonts/*` importiert und über `registerStdFonts` registriert.
+- **Optionsseite aus dem Content-Script öffnen:**
+  `runtime.openOptionsPage()` steht in Content-Scripts nicht zur Verfügung, und `window.open('moz-extension://...')`
+  von der Webseite aus wird von Firefox stillschweigend blockiert (Knöpfe «Einstellungen»/«Bearbeiten» im Dialog
+  reagierten nicht). Lösung: Das Content-Script sendet `{ type: 'sqr-open-options' }` per `runtime.sendMessage`
+  (Konstante in `src/core/messages.ts`), das Background-Script ruft `runtime.openOptionsPage()` auf.
 
 ## 14. Einzahlungsscheine für Gemeinden (Etappe 6, Stand 15.11.2026)
 

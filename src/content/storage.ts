@@ -7,6 +7,7 @@ import {
   type AppSettings,
   type CustomUrlsConfig,
 } from '../core/settings.js';
+import { OPEN_OPTIONS_MESSAGE } from '../core/messages.js';
 
 export { DEFAULT_CREDITOR };
 
@@ -37,7 +38,7 @@ declare const browser: {
     };
   };
   runtime?: {
-    openOptionsPage?: () => Promise<void>;
+    sendMessage?: (message: unknown) => Promise<unknown>;
   };
 } | undefined;
 
@@ -49,7 +50,7 @@ declare const chrome: {
     };
   };
   runtime?: {
-    openOptionsPage?: (callback?: () => void) => void;
+    sendMessage?: (message: unknown) => void;
   };
 } | undefined;
 
@@ -162,28 +163,21 @@ export async function isCreditorConfiguredInStorage(): Promise<boolean> {
 
 /**
  * Opens the extension's options page.
+ * runtime.openOptionsPage is not available in content scripts and window.open
+ * of a moz-extension:// URL is blocked, so the background script is asked to do it.
  */
 export async function openOptionsPage(): Promise<void> {
+  const message = { type: OPEN_OPTIONS_MESSAGE };
   try {
-    if (typeof browser !== 'undefined' && browser.runtime?.openOptionsPage) {
-      await browser.runtime.openOptionsPage();
+    if (typeof browser !== 'undefined' && browser.runtime?.sendMessage) {
+      await browser.runtime.sendMessage(message);
       return;
     }
-    if (typeof chrome !== 'undefined' && chrome.runtime?.openOptionsPage) {
-      chrome.runtime.openOptionsPage();
+    if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+      chrome.runtime.sendMessage(message);
       return;
     }
   } catch (err) {
-    console.warn('[SwissQRRechnung] Konnte Optionsseite nicht über runtime öffnen:', err);
-  }
-
-  // Fallback: window.open if running in browser context
-  if (typeof window !== 'undefined') {
-    const optionsUrl = typeof browser !== 'undefined' && (browser as unknown as { runtime?: { getURL?: (p: string) => string } }).runtime?.getURL
-      ? (browser as unknown as { runtime: { getURL: (p: string) => string } }).runtime.getURL('options/index.html')
-      : typeof chrome !== 'undefined' && chrome.runtime?.getURL
-      ? (chrome as unknown as { runtime: { getURL: (p: string) => string } }).runtime.getURL('options/index.html')
-      : 'options/index.html';
-    window.open(optionsUrl, '_blank');
+    console.warn('[SwissQRRechnung] Konnte Optionsseite nicht öffnen:', err);
   }
 }
