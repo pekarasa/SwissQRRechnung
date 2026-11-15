@@ -55,6 +55,24 @@ export interface MergeResult {
   unmatchedInvoices: Invoice[];
 }
 
+export interface DebtorAddress {
+  name: string;
+  street: string;
+  buildingNumber: string;
+  zipCode: string;
+  city: string;
+}
+
+export interface MunicipalityBill {
+  record: MergedRecord;
+  municipality: Municipality;
+  debtor: DebtorAddress;
+  amount: number;
+  amountFormatted: string;
+  additionalInformation: string;
+  fileName: string;
+}
+
 export interface QrBillRow {
   Lang: string;
   IBAN: string;

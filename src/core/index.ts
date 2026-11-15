@@ -5,6 +5,7 @@ export * from './parseInvoices.js';
 export * from './parseClients.js';
 export * from './parseMunicipalities.js';
 export * from './merge.js';
+export * from './municipality.js';
 export * from './mapping.js';
 export * from './csv.js';
 export * from './pipeline.js';
