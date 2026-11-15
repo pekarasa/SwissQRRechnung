@@ -6,7 +6,10 @@ import {
   isCreditorConfigured,
   importCreditorFromJson,
   exportCreditorToJson,
+  normalizeMunicipalitySelection,
+  sanitizeMunicipalityBilling,
 } from '../src/core/settings.js';
+import { DEFAULT_MUNICIPALITY_MESSAGE_TEMPLATE } from '../src/core/municipality.js';
 
 describe('settings', () => {
   describe('DEFAULT_APP_SETTINGS', () => {
@@ -125,6 +128,33 @@ describe('settings', () => {
 
       const reimported = importCreditorFromJson(jsonStr);
       expect(reimported).toEqual(DEFAULT_CREDITOR);
+    });
+  });
+
+  describe('municipality billing settings', () => {
+    it('has empty selection and default template by default', () => {
+      expect(DEFAULT_APP_SETTINGS.municipalityBilling).toEqual({
+        selected: [],
+        messageTemplate: DEFAULT_MUNICIPALITY_MESSAGE_TEMPLATE,
+      });
+      expect(DEFAULT_APP_SETTINGS.customUrls.municipalitiesPath).toBe('listen/export_listen_gemeinden_xls.php');
+    });
+
+    it('normalizes the selection', () => {
+      expect(normalizeMunicipalitySelection([' Gemeinde  Sissach ', 'gemeinde sissach', '', 5, 'Gemeinde Böckten'])).toEqual([
+        'Gemeinde Sissach',
+        'Gemeinde Böckten',
+      ]);
+      expect(normalizeMunicipalitySelection('Gemeinde Sissach')).toEqual([]);
+    });
+
+    it('migrates missing or invalid configuration', () => {
+      expect(sanitizeMunicipalityBilling(undefined)).toEqual(DEFAULT_APP_SETTINGS.municipalityBilling);
+      expect(sanitizeMunicipalityBilling({ selected: ['Gemeinde Sissach'], messageTemplate: '  ' })).toEqual({
+        selected: ['Gemeinde Sissach'],
+        messageTemplate: DEFAULT_MUNICIPALITY_MESSAGE_TEMPLATE,
+      });
+      expect(sanitizeMunicipalityBilling({ messageTemplate: 'RF {Nachname}' }).messageTemplate).toBe('RF {Nachname}');
     });
   });
 });

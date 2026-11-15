@@ -3,6 +3,7 @@ import {
   DEFAULT_CREDITOR,
   DEFAULT_APP_SETTINGS,
   isCreditorConfigured,
+  sanitizeMunicipalityBilling,
   type AppSettings,
   type CustomUrlsConfig,
 } from '../core/settings.js';
@@ -12,6 +13,7 @@ export { DEFAULT_CREDITOR };
 function sanitizeCustomUrls(urls?: Partial<CustomUrlsConfig>): CustomUrlsConfig {
   let clientsPath = urls?.clientsPath || DEFAULT_APP_SETTINGS.customUrls.clientsPath;
   let invoicesPath = urls?.invoicesPath || DEFAULT_APP_SETTINGS.customUrls.invoicesPath;
+  const municipalitiesPath = urls?.municipalitiesPath || DEFAULT_APP_SETTINGS.customUrls.municipalitiesPath;
 
   // Migrate old defaults without subdirectory prefix
   if (
@@ -24,7 +26,7 @@ function sanitizeCustomUrls(urls?: Partial<CustomUrlsConfig>): CustomUrlsConfig 
     invoicesPath = DEFAULT_APP_SETTINGS.customUrls.invoicesPath;
   }
 
-  return { clientsPath, invoicesPath };
+  return { clientsPath, invoicesPath, municipalitiesPath };
 }
 
 declare const browser: {
@@ -64,6 +66,7 @@ export async function loadAppSettings(): Promise<AppSettings> {
           ...DEFAULT_APP_SETTINGS,
           ...loaded,
           customUrls: sanitizeCustomUrls(loaded.customUrls),
+          municipalityBilling: sanitizeMunicipalityBilling(loaded.municipalityBilling),
         };
       }
       if (res.creditor && typeof res.creditor === 'object') {
@@ -84,6 +87,7 @@ export async function loadAppSettings(): Promise<AppSettings> {
           ...DEFAULT_APP_SETTINGS,
           ...loaded,
           customUrls: sanitizeCustomUrls(loaded.customUrls),
+          municipalityBilling: sanitizeMunicipalityBilling(loaded.municipalityBilling),
         };
       }
       if (res.creditor && typeof res.creditor === 'object') {

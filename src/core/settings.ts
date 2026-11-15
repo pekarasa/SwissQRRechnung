@@ -1,4 +1,6 @@
 import { isIBANValid } from 'swissqrbill/utils';
+import { DEFAULT_MUNICIPALITY_MESSAGE_TEMPLATE } from './municipality.js';
+import { normalizeMunicipalityName } from './parseClients.js';
 import type { CreditorConfig } from './types.js';
 
 export interface ExportParametersConfig {
@@ -11,6 +13,13 @@ export interface ExportParametersConfig {
 export interface CustomUrlsConfig {
   clientsPath: string;
   invoicesPath: string;
+  municipalitiesPath: string;
+}
+
+export interface MunicipalityBillingConfig {
+  /** Names of the municipalities that receive payment slips (e.g. "Gemeinde Sissach"). */
+  selected: string[];
+  messageTemplate: string;
 }
 
 export interface AppSettings {
@@ -18,6 +27,7 @@ export interface AppSettings {
   unstructuredMessage: string;
   exportParams: ExportParametersConfig;
   customUrls: CustomUrlsConfig;
+  municipalityBilling: MunicipalityBillingConfig;
 }
 
 export const DEFAULT_CREDITOR: CreditorConfig = {
@@ -42,8 +52,45 @@ export const DEFAULT_APP_SETTINGS: AppSettings = {
   customUrls: {
     clientsPath: 'listen/listClientsExportEkarus.php?aktiv=1',
     invoicesPath: 'Rechnung/betraege_gesamt_detail_ZR_Export.php',
+    municipalitiesPath: 'listen/export_listen_gemeinden_xls.php',
+  },
+  municipalityBilling: {
+    selected: [],
+    messageTemplate: DEFAULT_MUNICIPALITY_MESSAGE_TEMPLATE,
   },
 };
+
+/**
+ * Normalizes municipality names: trims, drops empty entries and case-insensitive duplicates.
+ */
+export function normalizeMunicipalitySelection(names: unknown): string[] {
+  if (!Array.isArray(names)) {
+    return [];
+  }
+  const result: string[] = [];
+  const seen = new Set<string>();
+  for (const raw of names) {
+    const name = normalizeMunicipalityName(typeof raw === 'string' ? raw : '');
+    if (name && !seen.has(name.toLowerCase())) {
+      seen.add(name.toLowerCase());
+      result.push(name);
+    }
+  }
+  return result;
+}
+
+/**
+ * Fills missing or invalid municipality billing settings with defaults (migration of older settings).
+ */
+export function sanitizeMunicipalityBilling(
+  config: Partial<MunicipalityBillingConfig> | null | undefined,
+): MunicipalityBillingConfig {
+  const template = typeof config?.messageTemplate === 'string' ? config.messageTemplate.trim() : '';
+  return {
+    selected: normalizeMunicipalitySelection(config?.selected),
+    messageTemplate: template || DEFAULT_MUNICIPALITY_MESSAGE_TEMPLATE,
+  };
+}
 
 /**
  * Validates individual fields of a creditor configuration.

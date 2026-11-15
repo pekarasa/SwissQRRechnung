@@ -85,6 +85,8 @@ function readFormCreditor(): CreditorConfig {
   };
 }
 
+let loadedSettings: AppSettings = DEFAULT_APP_SETTINGS;
+
 function readFormSettings(): AppSettings {
   const creditor = readFormCreditor();
   const unstructuredMessage = getElement<HTMLInputElement>('unstructuredMessage').value.trim() || 'Klientenanteil Spitex';
@@ -107,7 +109,9 @@ function readFormSettings(): AppSettings {
     customUrls: {
       clientsPath,
       invoicesPath,
+      municipalitiesPath: loadedSettings.customUrls.municipalitiesPath,
     },
+    municipalityBilling: loadedSettings.municipalityBilling,
   };
 }
 
@@ -125,6 +129,7 @@ function downloadFile(content: string, filename: string, mimeType: string): void
 
 async function initOptionsPage(): Promise<void> {
   const settings = await loadAppSettings();
+  loadedSettings = settings;
   populateForm(settings);
 
   const form = getElement<HTMLFormElement>('options-form');
