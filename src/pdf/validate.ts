@@ -1,5 +1,5 @@
 import { isIBANValid } from 'swissqrbill/utils';
-import type { CreditorConfig, MergedRecord } from '../core/types.js';
+import type { CreditorConfig, MergedRecord, MunicipalityBill } from '../core/types.js';
 
 /**
  * Validates creditor configuration according to SIX Swiss QR Bill standards.
@@ -109,5 +109,70 @@ export function validateForPdfGeneration(records: MergedRecord[], creditor: Cred
 
   for (const record of records) {
     validateMergedRecord(record);
+  }
+}
+
+/**
+ * Validates a municipality payment slip according to SIX Swiss QR Bill standards.
+ */
+export function validateMunicipalityBill(bill: MunicipalityBill): void {
+  const { debtor } = bill;
+  const label = `Gemeinde "${bill.municipality.name}" (Klient ${bill.record.client.matchName})`;
+
+  if (!(bill.amount > 0) || !Number.isFinite(bill.amount)) {
+    throw new Error(`Ungültiger Gemeindebetrag "${bill.amountFormatted}" für ${label}. Der Betrag muss grösser als 0 sein.`);
+  }
+
+  if (!debtor.name.trim()) {
+    throw new Error(`Name fehlt für ${label}.`);
+  }
+  if (debtor.name.trim().length > 70) {
+    throw new Error(`Name für ${label} überschreitet 70 Zeichen: "${debtor.name}"`);
+  }
+
+  if (!debtor.street.trim()) {
+    throw new Error(`Strasse bzw. Postfach fehlt für ${label}. Bitte die Adresse der Gemeinde in VeruA ergänzen.`);
+  }
+  if (debtor.street.trim().length > 70) {
+    throw new Error(`Strasse für ${label} überschreitet 70 Zeichen: "${debtor.street}"`);
+  }
+
+  if (debtor.buildingNumber && debtor.buildingNumber.trim().length > 16) {
+    throw new Error(`Hausnummer für ${label} überschreitet 16 Zeichen: "${debtor.buildingNumber}"`);
+  }
+
+  if (!debtor.zipCode.trim()) {
+    throw new Error(`PLZ fehlt für ${label}.`);
+  }
+  if (debtor.zipCode.trim().length > 16) {
+    throw new Error(`PLZ für ${label} überschreitet 16 Zeichen: "${debtor.zipCode}"`);
+  }
+
+  if (!debtor.city.trim()) {
+    throw new Error(`Ort fehlt für ${label}.`);
+  }
+  if (debtor.city.trim().length > 35) {
+    throw new Error(`Ort für ${label} überschreitet 35 Zeichen: "${debtor.city}"`);
+  }
+
+  if (bill.additionalInformation.length > 140) {
+    throw new Error(
+      `Zusätzliche Informationen für ${label} überschreiten 140 Zeichen. Bitte die Vorlage in den Einstellungen kürzen.`,
+    );
+  }
+}
+
+/**
+ * Validates all municipality payment slips and the creditor before PDF generation.
+ */
+export function validateMunicipalityBillsForPdf(bills: MunicipalityBill[], creditor: CreditorConfig): void {
+  if (bills.length === 0) {
+    throw new Error('Keine Gemeinde-Einzahlungsscheine für die PDF-Erstellung vorhanden.');
+  }
+
+  validateCreditor(creditor);
+
+  for (const bill of bills) {
+    validateMunicipalityBill(bill);
   }
 }

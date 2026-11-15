@@ -19,8 +19,13 @@ import TimesBold from 'pdfkit/standard-fonts/TimesBold';
 import { SwissQRBill } from 'swissqrbill/pdf';
 import { mm2pt } from 'swissqrbill/utils';
 import JSZip from 'jszip';
-import { validateForPdfGeneration, validateMergedRecord, validateCreditor } from './validate.js';
-import type { CreditorConfig, DebtorAddress, MergedRecord } from '../core/types.js';
+import {
+  validateForPdfGeneration,
+  validateMergedRecord,
+  validateCreditor,
+  validateMunicipalityBillsForPdf,
+} from './validate.js';
+import type { CreditorConfig, DebtorAddress, MergedRecord, MunicipalityBill } from '../core/types.js';
 
 // Register standard fonts for browser environments (pdfkit >= 0.16 requirement)
 const registerFn = (pdfkitModule as Record<string, unknown>).registerStdFonts as
@@ -101,6 +106,14 @@ function clientSlip(record: MergedRecord, unstructuredMessage: string): PaymentS
       city: record.client.city,
     },
     additionalInformation: unstructuredMessage,
+  };
+}
+
+function municipalitySlip(bill: MunicipalityBill): PaymentSlipData {
+  return {
+    amount: bill.amount,
+    debtor: bill.debtor,
+    additionalInformation: bill.additionalInformation,
   };
 }
 
@@ -236,6 +249,40 @@ export async function generateQrBillZip(
   // Add combined PDF
   const combinedPdf = await generateQrBillPdf(records, creditor, options);
   zip.file('QR-Rechnungen.pdf', combinedPdf);
+
+  return zip.generateAsync({ type: 'uint8array' });
+}
+
+export const MUNICIPALITY_PDF_FILENAME = 'Gemeinde-Einzahlungsscheine.pdf';
+
+/**
+ * Generates a multi-page A4 PDF with one municipality payment slip per page (invoice order).
+ */
+export async function generateMunicipalityBillPdf(
+  bills: MunicipalityBill[],
+  creditor: CreditorConfig,
+  options: Omit<QrBillPdfOptions, 'unstructuredMessage'> = {},
+): Promise<Uint8Array> {
+  validateMunicipalityBillsForPdf(bills, creditor);
+  return renderSlipsPdf(bills.map(municipalitySlip), creditor, options);
+}
+
+/**
+ * Generates individual PDFs per municipality payment slip (named by bill.fileName)
+ * plus the combined PDF, packaged in a ZIP archive.
+ */
+export async function generateMunicipalityBillZip(
+  bills: MunicipalityBill[],
+  creditor: CreditorConfig,
+  options: Omit<QrBillPdfOptions, 'unstructuredMessage'> = {},
+): Promise<Uint8Array> {
+  validateMunicipalityBillsForPdf(bills, creditor);
+
+  const zip = new JSZip();
+  for (const bill of bills) {
+    zip.file(bill.fileName, await renderSlipsPdf([municipalitySlip(bill)], creditor, options));
+  }
+  zip.file(MUNICIPALITY_PDF_FILENAME, await renderSlipsPdf(bills.map(municipalitySlip), creditor, options));
 
   return zip.generateAsync({ type: 'uint8array' });
 }
