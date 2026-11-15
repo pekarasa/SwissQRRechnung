@@ -118,6 +118,28 @@ export function buildInvoiceExportUrl(
 }
 
 /**
+ * Constructs the URL for the municipality list export ("Liste aller Gemeinden mit aktiven Klienten").
+ * VeruA endpoint: listen/export_listen_gemeinden_xls.php?id_owner=1&sprache=DE&aktiv=&spitex=0
+ */
+export function buildMunicipalitiesExportUrl(
+  baseUrl?: string,
+  params: { owner?: number; sprache?: string } = {},
+  customPath?: string,
+): string {
+  const query = new URLSearchParams({
+    id_owner: String(params.owner ?? 1),
+    sprache: params.sprache ?? 'DE',
+    aktiv: '',
+    spitex: '0',
+  });
+
+  const clean = cleanBaseUrl(baseUrl);
+  const basePath = (customPath ? customPath.replace(/\?.*$/, '') : 'listen/export_listen_gemeinden_xls.php').replace(/^\/+/, '');
+  const path = `${basePath}?${query.toString()}`;
+  return clean ? `${clean}/${path}` : path;
+}
+
+/**
  * Checks whether a given URL or pathname corresponds to the VeruA Rechnungsverwaltung page (start_abrechnung.php).
  */
 export function isRechnungsverwaltungUrl(urlOrPath: string): boolean {

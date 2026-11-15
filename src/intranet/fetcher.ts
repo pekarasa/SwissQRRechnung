@@ -3,6 +3,7 @@ import type { CustomUrlsConfig } from '../core/settings.js';
 import {
   buildClientExportUrl,
   buildInvoiceExportUrl,
+  buildMunicipalitiesExportUrl,
   type InvoiceExportParams,
 } from './url.js';
 
@@ -52,7 +53,7 @@ export function isLoginPageOrAuthError(text: string): boolean {
  */
 export function validateExportResponse(
   bytes: Uint8Array,
-  label: 'Stammdaten' | 'Rechnungsdaten',
+  label: 'Stammdaten' | 'Rechnungsdaten' | 'Gemeindeliste',
 ): string {
   if (!bytes || bytes.byteLength === 0) {
     throw new Error(`${label} konnten nicht geladen werden: Leere Antwort vom Server (0 Bytes).`);
@@ -148,6 +149,45 @@ export async function fetchInvoicesExport(
   const text = validateExportResponse(bytes, 'Rechnungsdaten');
 
   return { bytes, text };
+}
+
+/**
+ * Fetches the municipality list export (.xlsx) from VeruA.
+ * Always reads using arrayBuffer() and credentials: 'include'.
+ */
+export async function fetchMunicipalitiesExport(
+  params: { owner?: number; sprache?: string } = {},
+  options: FetchOptions = {},
+): Promise<Uint8Array> {
+  const fetchFn = options.fetchFn ?? globalThis.fetch;
+  if (!fetchFn) {
+    throw new Error('Keine fetch-Funktion verfügbar.');
+  }
+
+  const url = buildMunicipalitiesExportUrl(options.baseUrl, params, options.customUrls?.municipalitiesPath);
+
+  let response: Response;
+  try {
+    response = await fetchFn(url, {
+      method: 'GET',
+      credentials: 'include',
+    });
+  } catch (err) {
+    throw new Error(
+      `Netzwerkfehler beim Laden der Gemeindeliste (${url}): ${err instanceof Error ? err.message : String(err)}`,
+    );
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      `HTTP-Fehler beim Abrufen der Gemeindeliste: ${response.status} ${response.statusText}`,
+    );
+  }
+
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  validateExportResponse(bytes, 'Gemeindeliste');
+
+  return bytes;
 }
 
 /**

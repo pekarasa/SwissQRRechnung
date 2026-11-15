@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   buildClientExportUrl,
   buildInvoiceExportUrl,
+  buildMunicipalitiesExportUrl,
   formatMonthTwoDigits,
   getDefaultBillingPeriod,
   isRechnungsverwaltungUrl,
@@ -171,6 +172,20 @@ describe('Intranet URL and Period helpers', () => {
       expect(isRechnungsverwaltungUrl('https://oetterli.verua.org/start_klienten.php')).toBe(false);
       expect(isRechnungsverwaltungUrl('https://oetterli.verua.org/')).toBe(false);
       expect(isRechnungsverwaltungUrl('https://oetterli.verua.org/Rechnung/betraege_gesamt_detail_ZR_Export.php')).toBe(false);
+    });
+  });
+
+  describe('buildMunicipalitiesExportUrl', () => {
+    it('builds the default municipality list URL', () => {
+      expect(buildMunicipalitiesExportUrl('https://demo.verua.org/')).toBe(
+        'https://demo.verua.org/listen/export_listen_gemeinden_xls.php?id_owner=1&sprache=DE&aktiv=&spitex=0',
+      );
+    });
+
+    it('uses owner, language and a custom path without its query', () => {
+      expect(buildMunicipalitiesExportUrl(undefined, { owner: 3, sprache: 'FR' }, '/x/liste.php?foo=1')).toBe(
+        'x/liste.php?id_owner=3&sprache=FR&aktiv=&spitex=0',
+      );
     });
   });
 });

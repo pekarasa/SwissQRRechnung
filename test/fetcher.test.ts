@@ -4,6 +4,7 @@ import {
   fetchClientsExport,
   fetchInvoicesExport,
   fetchIntranetExports,
+  fetchMunicipalitiesExport,
   isLoginPageOrAuthError,
   validateExportResponse,
 } from '../src/intranet/fetcher.js';
@@ -136,6 +137,36 @@ describe('Intranet Fetcher', () => {
 
       expect(exports.clientsRawBytes).toEqual(clientData);
       expect(exports.invoicesText).toContain('Meier, Frau Sandra');
+    });
+  });
+
+  describe('fetchMunicipalitiesExport', () => {
+    it('fetches the municipality list with owner and language', async () => {
+      const xlsxBytes = new Uint8Array([0x50, 0x4b, 0x03, 0x04]);
+      const mockFetch: typeof fetch = async (input, init) => {
+        expect(input.toString()).toBe(
+          'https://demo.verua.org/listen/export_listen_gemeinden_xls.php?id_owner=2&sprache=DE&aktiv=&spitex=0',
+        );
+        expect(init?.credentials).toBe('include');
+        return new Response(xlsxBytes as unknown as BodyInit, { status: 200 });
+      };
+
+      const result = await fetchMunicipalitiesExport(
+        { owner: 2, sprache: 'DE' },
+        { baseUrl: 'https://demo.verua.org', fetchFn: mockFetch },
+      );
+      expect(result).toEqual(xlsxBytes);
+    });
+
+    it('reports HTTP errors and expired sessions', async () => {
+      const notFound: typeof fetch = async () => new Response('x', { status: 500, statusText: 'Server Error' });
+      await expect(fetchMunicipalitiesExport({}, { fetchFn: notFound })).rejects.toThrow(
+        'HTTP-Fehler beim Abrufen der Gemeindeliste: 500 Server Error',
+      );
+
+      const login: typeof fetch = async () =>
+        new Response('<!DOCTYPE html><html><input type="password"></html>', { status: 200 });
+      await expect(fetchMunicipalitiesExport({}, { fetchFn: login })).rejects.toThrow(/Gemeindeliste/);
     });
   });
 });
