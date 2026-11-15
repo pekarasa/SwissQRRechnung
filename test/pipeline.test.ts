@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { processInvoicesAndClients } from '../src/core/pipeline.js';
+import { processInvoicesAndClients, processMunicipalityBills } from '../src/core/pipeline.js';
 import type { CreditorConfig } from '../src/core/types.js';
 
 describe('end-to-end pipeline', () => {
@@ -107,6 +107,47 @@ describe('end-to-end pipeline', () => {
       expect(() =>
         processInvoicesAndClients(invalidInvoice, clientsData, normalizedCreditor),
       ).toThrowError(/Ungültiger Betrag/);
+    });
+  });
+
+  describe('municipality pipeline', () => {
+    const municipalitiesPath = path.join(
+      __dirname,
+      'fixtures',
+      'Liste-aller-Gemeinden-mit-aktiven-Klienten_15-11-2026.xlsx',
+    );
+
+    it('creates municipality bills and CSV from the three fixtures', () => {
+      const result = processMunicipalityBills(
+        fs.readFileSync(invoicesPath),
+        fs.readFileSync(clientsPath),
+        fs.readFileSync(municipalitiesPath),
+        normalizedCreditor,
+        ['Gemeinde Sissach'],
+      );
+
+      expect(result.municipalities).toHaveLength(5);
+      expect(result.municipalitiesInUse).toEqual(['Gemeinde Sissach', 'Gemeinde Gelterkinden']);
+      expect(result.bills.map((b) => b.amountFormatted)).toEqual(['126.55', '33.55', '157.70']);
+      expect(result.rows).toHaveLength(3);
+
+      const lines = result.csvString.trim().split('\n');
+      expect(lines).toHaveLength(4);
+      expect(lines[1]).toBe(
+        'de,CH5691006ZN0KQ3CKLIB8,S,Peter Portmann,Silandro,2,4450,Sissach,CH,126.55,CHF,S,Gemeinde Sissach,Bahnhofstrasse,1,4450,Sissach,CH,NON,,"Restfinanzierung Pflege Sandra Meier (181), 07/2026",,,,Gemeinde Sissach_Meier_Sandra.pdf,Frau,181',
+      );
+    });
+
+    it('returns no bills when the municipality list is empty', () => {
+      const result = processMunicipalityBills(
+        fs.readFileSync(invoicesPath),
+        fs.readFileSync(clientsPath),
+        new Uint8Array(0),
+        normalizedCreditor,
+        ['Gemeinde Sissach'],
+      );
+      expect(result.bills).toHaveLength(0);
+      expect(result.missingMunicipalities).toEqual(['Gemeinde Sissach']);
     });
   });
 });
