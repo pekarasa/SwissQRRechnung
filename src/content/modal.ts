@@ -1,8 +1,22 @@
 import { getDefaultBillingPeriod, type BillingPeriod } from '../intranet/url.js';
-import { runIntranetPipeline, type IntranetPipelineResult } from '../intranet/orchestrator.js';
-import { loadAppSettings, openOptionsPage } from './storage.js';
-import { isCreditorConfigured } from '../core/settings.js';
-import { generateQrBillPdf, generateQrBillZip } from '../pdf/generator.js';
+import { runIntranetPipeline, runMunicipalityPipeline } from '../intranet/orchestrator.js';
+import { loadAppSettings, openOptionsPage, saveAppSettings } from './storage.js';
+import { isCreditorConfigured, type AppSettings } from '../core/settings.js';
+import {
+  generateMunicipalityBillPdf,
+  generateMunicipalityBillZip,
+  generateQrBillPdf,
+  generateQrBillZip,
+  MUNICIPALITY_PDF_FILENAME,
+} from '../pdf/generator.js';
+import { createMunicipalitySelection } from './municipalitySelection.js';
+
+type BillingMode = 'clients' | 'municipalities';
+
+const SUBMIT_LABELS: Record<BillingMode, string> = {
+  clients: 'QR-Rechnungen erstellen',
+  municipalities: 'Gemeinde-Einzahlungsscheine erstellen',
+};
 
 /**
  * Triggers a file download in the browser.
@@ -299,6 +313,45 @@ export async function openQrBillModal(): Promise<void> {
   periodSection.appendChild(grid);
   body.appendChild(periodSection);
 
+  // Billing mode section
+  const modeSection = document.createElement('div');
+  const modeTitle = document.createElement('div');
+  modeTitle.className = 'sqr-section-title';
+  modeTitle.textContent = 'Art der Rechnungen';
+  modeSection.appendChild(modeTitle);
+
+  const modeGroup = document.createElement('div');
+  modeGroup.className = 'sqr-radio-group';
+  modeGroup.setAttribute('role', 'radiogroup');
+
+  const modeOptions: { value: BillingMode; label: string }[] = [
+    { value: 'clients', label: 'Klientenrechnungen (Klientenanteil)' },
+    { value: 'municipalities', label: 'Gemeinde-Einzahlungsscheine (Restfinanzierung)' },
+  ];
+  for (const option of modeOptions) {
+    const label = document.createElement('label');
+    label.className = 'sqr-radio';
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'sqr-billing-mode';
+    input.value = option.value;
+    input.checked = option.value === 'clients';
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(` ${option.label}`));
+    modeGroup.appendChild(label);
+  }
+  modeSection.appendChild(modeGroup);
+  body.appendChild(modeSection);
+
+  const municipalitySelection = createMunicipalitySelection(settings);
+  municipalitySelection.element.style.display = 'none';
+  body.appendChild(municipalitySelection.element);
+
+  const getMode = (): BillingMode => {
+    const checked = modeGroup.querySelector<HTMLInputElement>('input[name="sqr-billing-mode"]:checked');
+    return checked?.value === 'municipalities' ? 'municipalities' : 'clients';
+  };
+
   // Status Box
   const statusBox = document.createElement('div');
   statusBox.id = 'sqr-status-box';
@@ -321,7 +374,7 @@ export async function openQrBillModal(): Promise<void> {
   submitBtn.type = 'button';
   submitBtn.className = 'sqr-btn sqr-btn-primary';
   submitBtn.id = 'sqr-btn-submit';
-  submitBtn.textContent = 'QR-Rechnungen erstellen';
+  submitBtn.textContent = SUBMIT_LABELS.clients;
   if (!hasConfiguredCreditor) {
     submitBtn.disabled = true;
     submitBtn.title = 'Bitte zuerst Rechnungssteller einrichten';
@@ -344,6 +397,17 @@ export async function openQrBillModal(): Promise<void> {
     }
   });
 
+  modeGroup.addEventListener('change', () => {
+    const mode = getMode();
+    submitBtn.textContent = SUBMIT_LABELS[mode];
+    municipalitySelection.element.style.display = mode === 'municipalities' ? '' : 'none';
+    if (mode === 'municipalities') {
+      void municipalitySelection.load();
+    }
+  });
+
+  const hiddenOnResult = [periodSection, modeSection, municipalitySelection.element];
+
   submitBtn.addEventListener('click', async () => {
     const year = parseInt(yearInput.value, 10);
     const fromMonth = parseInt(fromSelect.value, 10);
@@ -360,6 +424,18 @@ export async function openQrBillModal(): Promise<void> {
     }
 
     const period: BillingPeriod = { year, fromMonth, toMonth };
+    const mode = getMode();
+
+    if (mode === 'municipalities') {
+      await runMunicipalityMode(period, settings, municipalitySelection.getSelected(), {
+        submitBtn,
+        statusBox,
+        footer,
+        closeModal,
+        hiddenOnResult,
+      });
+      return;
+    }
 
     submitBtn.disabled = true;
     showStatus(
@@ -397,14 +473,29 @@ export async function openQrBillModal(): Promise<void> {
         unstructuredMessage: settings.unstructuredMessage,
       });
 
-      handleExecutionSuccess(
-        pipelineResult,
-        pdfBytes,
-        settings,
-        statusBox,
-        footer,
-        closeModal,
-        periodSection,
+      const warnings: string[] = [];
+      if (pipelineResult.unmatchedInvoices.length > 0) {
+        const names = pipelineResult.unmatchedInvoices.map((inv) => inv.matchName).join(', ');
+        warnings.push(
+          `Achtung: ${pipelineResult.unmatchedInvoices.length} Rechnungen konnten keinem Klienten in den Stammdaten zugeordnet werden: ${names}`,
+        );
+      }
+
+      showResultView(
+        {
+          successMessage: `${pipelineResult.matchedCount} QR-Rechnungen erfolgreich erstellt!`,
+          warnings,
+          pdfBytes,
+          pdfFileName: 'QR-Rechnungen.pdf',
+          createZip: () =>
+            generateQrBillZip(pipelineResult.matched, settings.creditor, {
+              unstructuredMessage: settings.unstructuredMessage,
+            }),
+          zipFileName: 'QR-Rechnungen.zip',
+          csvBytes: pipelineResult.csvBytes,
+          csvFileName: 'QR-Rechnungen.csv',
+        },
+        { statusBox, footer, closeModal, hiddenOnResult },
       );
     } catch (err) {
       submitBtn.disabled = false;
@@ -412,6 +503,104 @@ export async function openQrBillModal(): Promise<void> {
       showStatus(statusBox, 'error', `Fehler: ${formattedMsg}`);
     }
   });
+}
+
+interface DialogElements {
+  statusBox: HTMLElement;
+  footer: HTMLElement;
+  closeModal: () => void;
+  hiddenOnResult: HTMLElement[];
+}
+
+/**
+ * Runs the municipality flow: saves the selection, loads all exports and creates the payment slips.
+ */
+async function runMunicipalityMode(
+  period: BillingPeriod,
+  settings: AppSettings,
+  selected: string[],
+  elements: DialogElements & { submitBtn: HTMLButtonElement },
+): Promise<void> {
+  const { submitBtn, statusBox } = elements;
+
+  if (selected.length === 0) {
+    showStatus(statusBox, 'error', 'Bitte wählen Sie mindestens eine Gemeinde aus.');
+    return;
+  }
+
+  submitBtn.disabled = true;
+
+  const updatedSettings: AppSettings = {
+    ...settings,
+    municipalityBilling: { ...settings.municipalityBilling, selected },
+  };
+  await saveAppSettings(updatedSettings);
+
+  showStatus(
+    statusBox,
+    'loading',
+    `Lade Stammdaten, Rechnungsdaten und Gemeindeliste für ${period.fromMonth}/${period.year} bis ${period.toMonth}/${period.year} aus VeruA...`,
+  );
+
+  try {
+    const result = await runMunicipalityPipeline({
+      period,
+      creditor: settings.creditor,
+      selectedMunicipalities: selected,
+      messageTemplate: settings.municipalityBilling.messageTemplate,
+      exportParams: settings.exportParams,
+      customUrls: settings.customUrls,
+    });
+
+    const warnings: string[] = [];
+    if (result.missingMunicipalities.length > 0) {
+      warnings.push(
+        `Ohne Adresse in der VeruA-Gemeindeliste (übersprungen): ${result.missingMunicipalities.join(', ')}`,
+      );
+    }
+    if (result.zeroAmountRecords.length > 0) {
+      const names = result.zeroAmountRecords.map((r) => r.client.matchName).join(', ');
+      warnings.push(`Gemeindeanteil 0.00 (kein Einzahlungsschein): ${names}`);
+    }
+    if (result.unmatchedInvoices.length > 0) {
+      const names = result.unmatchedInvoices.map((inv) => inv.matchName).join(', ');
+      warnings.push(
+        `${result.unmatchedInvoices.length} Rechnungen konnten keinem Klienten in den Stammdaten zugeordnet werden: ${names}`,
+      );
+    }
+
+    if (result.bills.length === 0) {
+      submitBtn.disabled = false;
+      const reason = warnings.length > 0 ? ` ${warnings.join(' ')}` : '';
+      showStatus(
+        statusBox,
+        'warning',
+        `Für die gewählten Gemeinden und die Rechnungsperiode wurden keine Einzahlungsscheine erstellt.${reason}`,
+      );
+      return;
+    }
+
+    showStatus(statusBox, 'loading', `Erzeuge ${result.bills.length} Gemeinde-Einzahlungsscheine (PDF)...`);
+
+    const pdfBytes = await generateMunicipalityBillPdf(result.bills, settings.creditor);
+
+    showResultView(
+      {
+        successMessage: `${result.bills.length} Gemeinde-Einzahlungsscheine erfolgreich erstellt!`,
+        warnings,
+        pdfBytes,
+        pdfFileName: MUNICIPALITY_PDF_FILENAME,
+        createZip: () => generateMunicipalityBillZip(result.bills, settings.creditor),
+        zipFileName: 'Gemeinde-Einzahlungsscheine.zip',
+        csvBytes: result.csvBytes,
+        csvFileName: 'Gemeinde-Einzahlungsscheine.csv',
+      },
+      elements,
+    );
+  } catch (err) {
+    submitBtn.disabled = false;
+    showStatus(statusBox, 'error', `Fehler: ${formatErrorMessage(err)}`);
+  }
 }
 
 function showStatus(
@@ -442,62 +631,59 @@ function showStatus(
   }
 }
 
-function handleExecutionSuccess(
-  result: IntranetPipelineResult,
-  pdfBytes: Uint8Array,
-  settings: Awaited<ReturnType<typeof loadAppSettings>>,
-  statusBox: HTMLElement,
-  footer: HTMLElement,
-  closeModal: () => void,
-  periodSection: HTMLElement,
-): void {
+interface ResultViewOptions {
+  successMessage: string;
+  warnings: string[];
+  pdfBytes: Uint8Array;
+  pdfFileName: string;
+  createZip: () => Promise<Uint8Array>;
+  zipFileName: string;
+  csvBytes: Uint8Array;
+  csvFileName: string;
+}
+
+function showResultView(result: ResultViewOptions, elements: DialogElements): void {
+  const { statusBox, footer, closeModal, hiddenOnResult } = elements;
+  const { pdfBytes } = result;
+
   statusBox.style.display = 'flex';
   statusBox.textContent = '';
 
-  // Collapse period picker to save vertical space
-  periodSection.style.display = 'none';
+  // Collapse input sections to save vertical space
+  for (const section of hiddenOnResult) {
+    section.style.display = 'none';
+  }
 
-  if (result.unmatchedInvoices.length > 0) {
-    statusBox.className = 'sqr-status sqr-status-warning';
-    const icon = document.createElement('div');
-    icon.style.fontWeight = 'bold';
-    icon.style.fontSize = '16px';
-    icon.textContent = '⚠️';
+  const hasWarnings = result.warnings.length > 0;
+  statusBox.className = hasWarnings ? 'sqr-status sqr-status-warning' : 'sqr-status sqr-status-success';
 
-    const content = document.createElement('div');
-    const boldMsg = document.createElement('strong');
-    boldMsg.textContent = `${result.matchedCount} QR-Rechnungen erfolgreich erstellt!`;
-    content.appendChild(boldMsg);
+  const icon = document.createElement('div');
+  icon.style.fontWeight = 'bold';
+  icon.style.fontSize = '16px';
+  icon.textContent = hasWarnings ? '⚠️' : '✓';
 
-    const warnMsg = document.createElement('div');
-    warnMsg.style.marginTop = '6px';
-    const names = result.unmatchedInvoices.map((inv) => inv.matchName).join(', ');
-    warnMsg.textContent = `Achtung: ${result.unmatchedInvoices.length} Rechnungen konnten keinem Klienten in den Stammdaten zugeordnet werden: ${names}`;
-    content.appendChild(warnMsg);
+  const content = document.createElement('div');
+  const boldMsg = document.createElement('strong');
+  boldMsg.textContent = result.successMessage;
+  content.appendChild(boldMsg);
 
-    statusBox.appendChild(icon);
-    statusBox.appendChild(content);
+  if (hasWarnings) {
+    for (const warning of result.warnings) {
+      const warnMsg = document.createElement('div');
+      warnMsg.style.marginTop = '6px';
+      warnMsg.textContent = warning;
+      content.appendChild(warnMsg);
+    }
   } else {
-    statusBox.className = 'sqr-status sqr-status-success';
-    const icon = document.createElement('div');
-    icon.style.fontWeight = 'bold';
-    icon.style.fontSize = '16px';
-    icon.textContent = '✓';
-
-    const content = document.createElement('div');
-    const boldMsg = document.createElement('strong');
-    boldMsg.textContent = `${result.matchedCount} QR-Rechnungen erfolgreich erstellt!`;
-    content.appendChild(boldMsg);
-
     const subMsg = document.createElement('div');
     subMsg.style.marginTop = '4px';
     subMsg.style.fontSize = '12px';
     subMsg.textContent = 'Die PDF-Rechnungen sind druckbereit mit Standard-Zahlteil (105 mm).';
     content.appendChild(subMsg);
-
-    statusBox.appendChild(icon);
-    statusBox.appendChild(content);
   }
+
+  statusBox.appendChild(icon);
+  statusBox.appendChild(content);
 
   // Footer Actions: PDF, Vorschau, Drucken, ZIP, CSV, Schliessen
   footer.textContent = '';
@@ -505,9 +691,9 @@ function handleExecutionSuccess(
   const downloadPdfBtn = document.createElement('button');
   downloadPdfBtn.className = 'sqr-btn sqr-btn-primary';
   downloadPdfBtn.textContent = '📄 PDF herunterladen';
-  downloadPdfBtn.title = 'Sammel-PDF mit allen QR-Rechnungen herunterladen';
+  downloadPdfBtn.title = 'Sammel-PDF mit allen Einzahlungsscheinen herunterladen';
   downloadPdfBtn.addEventListener('click', () => {
-    downloadFile(pdfBytes, 'QR-Rechnungen.pdf', 'application/pdf');
+    downloadFile(pdfBytes, result.pdfFileName, 'application/pdf');
   });
 
   const previewBtn = document.createElement('button');
@@ -529,15 +715,13 @@ function handleExecutionSuccess(
   const downloadZipBtn = document.createElement('button');
   downloadZipBtn.className = 'sqr-btn sqr-btn-secondary';
   downloadZipBtn.textContent = '📦 Einzel-PDFs (ZIP)';
-  downloadZipBtn.title = 'ZIP-Archiv mit Einzel-PDFs pro Klient herunterladen';
+  downloadZipBtn.title = 'ZIP-Archiv mit Einzel-PDFs herunterladen';
   downloadZipBtn.addEventListener('click', async () => {
     downloadZipBtn.disabled = true;
     downloadZipBtn.textContent = '📦 ZIP wird erstellt...';
     try {
-      const zipBytes = await generateQrBillZip(result.matched, settings.creditor, {
-        unstructuredMessage: settings.unstructuredMessage,
-      });
-      downloadFile(zipBytes, 'QR-Rechnungen.zip', 'application/zip');
+      const zipBytes = await result.createZip();
+      downloadFile(zipBytes, result.zipFileName, 'application/zip');
     } catch (err) {
       alert(`Fehler beim Erstellen des ZIP-Archivs: ${String(err)}`);
     } finally {
@@ -549,9 +733,9 @@ function handleExecutionSuccess(
   const downloadCsvBtn = document.createElement('button');
   downloadCsvBtn.className = 'sqr-btn sqr-btn-secondary';
   downloadCsvBtn.textContent = '📊 CSV';
-  downloadCsvBtn.title = 'QR-Rechnungen.csv (Windows-1252) herunterladen';
+  downloadCsvBtn.title = `${result.csvFileName} (Windows-1252) herunterladen`;
   downloadCsvBtn.addEventListener('click', () => {
-    downloadFile(result.csvBytes, 'QR-Rechnungen.csv', 'text/csv;charset=windows-1252');
+    downloadFile(result.csvBytes, result.csvFileName, 'text/csv;charset=windows-1252');
   });
 
   const closeButton = document.createElement('button');
