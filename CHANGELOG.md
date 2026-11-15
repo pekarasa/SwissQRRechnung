@@ -5,7 +5,18 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) 
 
 ## [Unveröffentlicht]
 
+## [1.1.0] - 2026-11-15
+
+### Hinzugefügt
+- **Gemeinde-Einzahlungsscheine (Restfinanzierung)**: Für konfigurierbare Gemeinden wird pro Klient ein QR-Einzahlungsschein über den Gemeindeanteil KLV (Spalte 14 der Rechnungsdaten) erstellt; «Zahlbar durch» ist die Gemeinde.
+  - Abruf der VeruA-Gemeindeliste (`listen/export_listen_gemeinden_xls.php`) mit Adressen (Zusatz, Postfach als Ersatz für die Strasse).
+  - Dialog: Auswahl «Klientenrechnungen / Gemeinde-Einzahlungsscheine», Gemeinde-Auswahl per Checkbox (wird gespeichert), Hinweise zu Gemeinden ohne Adresse und Gemeindeanteil 0.00.
+  - Sammel-PDF `Gemeinde-Einzahlungsscheine.pdf`, ZIP mit Einzel-PDFs `{Gemeinde}_{Nachname}_{Vorname}.pdf`, CSV im bisherigen Format.
+  - Optionsseite: gewählte Gemeinden, Vorlage «Zusätzliche Informationen» mit Platzhaltern, Pfad der Gemeindeliste.
+- Parser lesen zusätzlich Gemeindeanteil, Monat/Jahr (Rechnungsdaten) sowie `Kostenträger Gemeinde` und `ID Gemeinde` (Stammdaten).
+
 ### Geändert
+- PDF-Generator arbeitet intern mit allgemeinen Zahlteil-Daten (Klienten- und Gemeinde-Einzahlungsscheine).
 - Repository auf die Firefox-Erweiterung reduziert: Der Inhalt von `extension/` liegt jetzt im Repository-Root.
 - Die Python-Konsolenanwendung (`app.py`, `test_app.py`, `config/`, `data/`) wurde entfernt; sie bleibt in der Git-Historie erhalten.
 - Verteilungsvorlagen (`distribution/`) sind nicht mehr Teil des Erweiterungspakets.

@@ -64,8 +64,8 @@ Wenn neue Versionen automatisch bezogen werden sollen:
        "swissqrrechnung@spitex.local": {
          "updates": [
            {
-             "version": "1.0.1",
-             "update_link": "https://intranet.ihre-domain.ch/extensions/swissqrrechnung-1.0.1.xpi"
+             "version": "1.1.0",
+             "update_link": "https://intranet.ihre-domain.ch/extensions/swissqrrechnung-1.1.0.xpi"
            }
          ]
        }
@@ -88,7 +88,7 @@ Eine Vorlage befindet sich in `distribution/policies.json`:
     "ExtensionSettings": {
       "swissqrrechnung@spitex.local": {
         "installation_mode": "normal_installed",
-        "install_url": "file:///C:/Program%20Files/SwissQRRechnung/swissqrrechnung-1.0.0.xpi"
+        "install_url": "file:///C:/Program%20Files/SwissQRRechnung/swissqrrechnung-1.1.0.xpi"
       }
     }
   }

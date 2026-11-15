@@ -3,6 +3,10 @@
     "swissqrrechnung@spitex.local": {
       "updates": [
         {
+          "version": "1.1.0",
+          "update_link": "https://intranet.spitex.local/extensions/swissqrrechnung-1.1.0.xpi"
+        },
+        {
           "version": "1.0.0",
           "update_link": "https://intranet.spitex.local/extensions/swissqrrechnung-1.0.0.xpi"
         }
