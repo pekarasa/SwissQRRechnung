@@ -5,6 +5,12 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/de/1.0.0/) 
 
 ## [Unveröffentlicht]
 
+### Geändert
+- Dialog: Link «Bearbeiten» beim Rechnungssteller entfernt; die Einstellungen werden über «⚙️ Einstellungen» geöffnet.
+
+### Behoben
+- Knöpfe im Dialog, die die Einstellungen öffnen sollen, reagierten nicht (Firefox blockiert das direkte Öffnen aus der Webseite; jetzt via Background-Script).
+
 ## [1.1.0] - 2026-11-15
 
 ### Hinzugefügt

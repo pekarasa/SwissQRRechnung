@@ -223,27 +223,9 @@ export async function openQrBillModal(): Promise<void> {
     const creditorBox = document.createElement('div');
     creditorBox.className = 'sqr-creditor-info';
 
-    const credHeader = document.createElement('div');
-    credHeader.style.display = 'flex';
-    credHeader.style.justifyContent = 'space-between';
-    credHeader.style.alignItems = 'center';
-
     const creditorTitle = document.createElement('strong');
     creditorTitle.textContent = 'Rechnungssteller:';
-    credHeader.appendChild(creditorTitle);
-
-    const editBtn = document.createElement('a');
-    editBtn.href = '#';
-    editBtn.style.fontSize = '12px';
-    editBtn.style.color = '#e62020';
-    editBtn.textContent = 'Bearbeiten';
-    editBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      openOptionsPage();
-    });
-    credHeader.appendChild(editBtn);
-
-    creditorBox.appendChild(credHeader);
+    creditorBox.appendChild(creditorTitle);
 
     const creditorAddress = document.createElement('div');
     creditorAddress.textContent = `${settings.creditor.firstName} ${settings.creditor.lastName}, ${settings.creditor.street} ${settings.creditor.buildingNumber}, ${settings.creditor.zipCode} ${settings.creditor.city}`;
