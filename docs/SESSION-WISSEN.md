@@ -268,5 +268,41 @@ Testfixtures committen, sofern nicht anonymisiert.
   Lösung: In `src/pdf/generator.ts` werden die Standard-Schriften (`Helvetica`, `HelveticaBold`, etc.) explizit aus
   `pdfkit/standard-fonts/*` importiert und über `registerStdFonts` registriert.
 
+## 14. Einzahlungsscheine für Gemeinden (Etappe 6, Stand 15.11.2026)
+
+### 14.1 Entscheide
+
+| Thema | Entscheid |
+|---|---|
+| Variante | B: ein Einzahlungsschein **pro Klient**, adressiert an die Gemeinde (keine Sammelrechnung) |
+| Betrag | Gemeindeanteil (Restfinanzierung), **nur KLV** = Spalte 14 der Rechnungs-CSV |
+| Zahlungsempfänger (Konto / Zahlbar an) | unverändert der konfigurierte Rechnungssteller |
+| Zahlbar durch | die Gemeinde mit Adresse aus der VeruA-Gemeindeliste |
+| Auswahl | konfigurierbar: Liste gewählter Gemeinden (Namen), im Dialog per Checkbox wählbar, gespeichert in `storage.local` |
+| Zuordnung Klient -> Gemeinde | Stammdaten-Spalte `Kostenträger Gemeinde` (Name) == Spalte `Name` der Gemeindeliste (die Liste enthält keine ID) |
+
+### 14.2 Datenquellen
+
+- Rechnungs-CSV (Abschnitt 5.2): Spaltenkopf «Gemeinde» mit Unterspalten KLV/Mat./FT = Index 14/15/16.
+  Index 1 = Monat, Index 2 = Jahr. Beispiel Gemeinde KLV: Meier 126.55, Steiner 33.55, Knüsel 90.50, Wagner 157.70.
+- Stammdaten (Abschnitt 5.1): `Kostenträger Gemeinde` (z. B. `Gemeinde Sissach`, Nicht-Klienten haben ` - `),
+  `ID Gemeinde` (z. B. 491).
+- Gemeindeliste: `listen/export_listen_gemeinden_xls.php?id_owner=1&sprache=DE&aktiv=&spitex=0`
+  (relativ zu `https://benutzerId.verua.org/`). Beispiel: `test/fixtures/Liste-aller-Gemeinden-mit-aktiven-Klienten_15-11-2026.xlsx`.
+  - Echtes XLSX, ein Blatt `Worksheet`. Zeile 1 Titel «Liste aller Gemeinden mit aktiven Klienten», Zeile 2 leer,
+    Zeile 3 Kopf: `Name, Zusatz, Strasse, Postfach, PLZ, Ort, Telefon`, ab Zeile 4 Daten.
+  - Beispiel: `Gemeinde Kilchberg, Verbund Schafmatt, Wenslingerstrasse 2, , 4495, Zeglingen, +41 61 983 03 43`.
+  - Mehrere Gemeinden können dieselbe Adresse haben (Verbund Schafmatt).
+
+### 14.3 Mapping Gemeinde-Einzahlungsschein
+
+- Debitorname = `Name`, bei vorhandenem `Zusatz`: `{Name}, {Zusatz}` (strukturierte Adresse kennt keine Zusatzzeile).
+- Strasse/Nr. aus `Strasse` (gleiche Trennung wie Abschnitt 6); ist `Strasse` leer, wird `Postfach` als Strasse verwendet.
+- Betrag = Gemeinde KLV; Zeilen mit Betrag 0 werden übersprungen (als Hinweis gemeldet).
+- Zusätzliche Informationen = Vorlage, Standard `Restfinanzierung Pflege {Vorname} {Nachname} ({Nummer}), {Monat}/{Jahr}`
+  (Platzhalter: `{Vorname}`, `{Nachname}`, `{Nummer}`, `{Monat}`, `{Jahr}`, `{Gemeinde}`), max. 140 Zeichen.
+- Dateiname im ZIP: `{Gemeinde}_{Nachname}_{Vorname}.pdf`; Sammel-PDF `Gemeinde-Einzahlungsscheine.pdf`.
+- Klienten, deren Gemeinde gewählt, aber nicht in der Gemeindeliste ist, werden als Warnung gemeldet.
+
 
 

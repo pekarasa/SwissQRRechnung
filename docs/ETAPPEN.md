@@ -94,6 +94,32 @@ Aufgaben
 
 ---
 
+## Etappe 6: Einzahlungsscheine für Gemeinden (Restfinanzierung) `[ ]`
+
+Ziel: Für konfigurierbare Gemeinden wird pro Klient ein QR-Einzahlungsschein über den Gemeindeanteil
+(Restfinanzierung, «Gemeinde KLV») erstellt; «Zahlbar durch» ist die Gemeinde. Entscheide und Datenformate:
+`SESSION-WISSEN.md` Abschnitt 14.
+
+Aufgaben
+- [ ] Doku: Entscheide, Datenformat Gemeindeliste, Etappenplan; Fixture `Liste-aller-Gemeinden-mit-aktiven-Klienten_15-11-2026.xlsx`.
+- [ ] `parseInvoices.ts`: zusätzlich Spalte 14 (Gemeinde KLV), Monat (1) und Jahr (2) lesen. Referenz-CSV bleibt bytegenau.
+- [ ] `parseClients.ts`: zusätzlich `Kostenträger Gemeinde` und `ID Gemeinde` lesen (` - ` = keine Gemeinde).
+- [ ] `parseMunicipalities.ts`: Gemeindeliste (XLSX, Kopfzeile «Name») -> `Municipality[]` mit Adresse (Strasse/Nr. getrennt, Postfach als Ersatz, Zusatz).
+- [ ] `municipality.ts`: Gemeinderechnungen bilden (Filter auf gewählte Gemeinden, Betrag > 0, Adresse über Namen), Warnungen (Gemeinde nicht in Liste, Betrag 0); Mapping auf die 27 CSV-Spalten.
+- [ ] Einstellungen: gewählte Gemeinden, Verwendungszweck-Vorlage, Pfad der Gemeindeliste; Migration bestehender Einstellungen.
+- [ ] Intranet: URL-Builder und Abruf `listen/export_listen_gemeinden_xls.php?id_owner=1&sprache=DE&aktiv=&spitex=0`.
+- [ ] Orchestrator: Gemeinde-Pipeline (drei Exporte parallel laden).
+- [ ] PDF: Generator auf allgemeine Zahlteil-Daten umstellen; Gemeinde-PDF und ZIP (`{Gemeinde}_{Nachname}_{Vorname}.pdf`).
+- [ ] Dialog: Auswahl «Klientenrechnungen / Gemeinderechnungen», Gemeinde-Auswahl (Checkboxen aus der Gemeindeliste, gespeichert), Ergebnisanzeige mit Warnungen.
+- [ ] Optionsseite: gewählte Gemeinden und Verwendungszweck-Vorlage bearbeiten.
+- [ ] Abschluss: Version 1.1.0, Changelog, README, `npm test`, `npm run build`, `web-ext lint`.
+
+Abnahme: Mit den Fixtures und gewählten Gemeinden «Gemeinde Sissach» und «Gemeinde Gelterkinden» entstehen
+4 Einzahlungsscheine (Meier 126.55, Steiner 33.55, Knüsel 90.50, Wagner 157.70), «Zahlbar durch» ist die
+jeweilige Gemeinde. Nur «Gemeinde Sissach» gewählt: 3 Scheine (Knüsel entfällt).
+
+---
+
 ## Reihenfolge der Arbeit (Empfehlung)
 
 1 -> 3 -> 2 -> 4 -> 5. Begründung: Core und PDF sind ohne Intranetzugang entwickelbar; Etappe 2 braucht die
