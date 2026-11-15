@@ -2,7 +2,11 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import type { CreditorConfig } from '../src/core/types.js';
-import { runIntranetPipeline } from '../src/intranet/orchestrator.js';
+import {
+  loadMunicipalityList,
+  runIntranetPipeline,
+  runMunicipalityPipeline,
+} from '../src/intranet/orchestrator.js';
 
 const FIXTURES_DIR = resolve(__dirname, 'fixtures');
 
@@ -89,5 +93,56 @@ describe('Intranet Orchestrator Pipeline', () => {
     expect(result.unmatchedInvoices).toHaveLength(1);
     expect(result.unmatchedInvoices[0]?.matchName).toBe('Unbekannt, Herr Max');
     expect(result.rows).toHaveLength(1);
+  });
+
+  describe('municipality pipeline', () => {
+    const fixture = (name: string) => new Uint8Array(readFileSync(resolve(FIXTURES_DIR, name)));
+    const requestedUrls: string[] = [];
+    const mockFetch: typeof fetch = async (input) => {
+      const url = input.toString();
+      requestedUrls.push(url);
+      if (url.includes('listClientsExportEkarus.php')) {
+        return new Response(fixture('checkDataClients_Klientenstatus_-aktiv_02-08-2026.xls') as unknown as BodyInit, { status: 200 });
+      }
+      if (url.includes('betraege_gesamt_detail_ZR_Export.php')) {
+        return new Response(fixture('Alle_Kantone_07-07_2026_1785683522.csv') as unknown as BodyInit, { status: 200 });
+      }
+      if (url.includes('export_listen_gemeinden_xls.php')) {
+        return new Response(
+          fixture('Liste-aller-Gemeinden-mit-aktiven-Klienten_15-11-2026.xlsx') as unknown as BodyInit,
+          { status: 200 },
+        );
+      }
+      return new Response('Not Found', { status: 404 });
+    };
+
+    it('loads the municipality list', async () => {
+      const list = await loadMunicipalityList({
+        exportParams: { owner: 1, sprache: 'DE' },
+        fetchOptions: { baseUrl: 'https://oetterli.verua.org', fetchFn: mockFetch },
+      });
+      expect(list.map((m) => m.name)).toContain('Gemeinde Sissach');
+      expect(requestedUrls).toContain(
+        'https://oetterli.verua.org/listen/export_listen_gemeinden_xls.php?id_owner=1&sprache=DE&aktiv=&spitex=0',
+      );
+    });
+
+    it('fetches three exports and builds municipality bills', async () => {
+      const result = await runMunicipalityPipeline({
+        period: { year: 2026, fromMonth: 7, toMonth: 7 },
+        creditor: CREDITOR,
+        selectedMunicipalities: ['Gemeinde Sissach', 'Gemeinde Gelterkinden'],
+        fetchOptions: { baseUrl: 'https://oetterli.verua.org', fetchFn: mockFetch },
+      });
+
+      expect(result.bills.map((b) => [b.record.client.lastName, b.amountFormatted])).toEqual([
+        ['Meier', '126.55'],
+        ['Steiner', '33.55'],
+        ['Knüsel', '90.50'],
+        ['Wagner', '157.70'],
+      ]);
+      expect(result.rows).toHaveLength(4);
+      expect(result.unmatchedInvoices).toHaveLength(0);
+    });
   });
 });
